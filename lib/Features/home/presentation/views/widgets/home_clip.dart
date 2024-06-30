@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kamon/Features/home/data/seach_view_model.dart';
+import 'package:kamon/core/utils/app_router.dart';
 import 'package:provider/provider.dart';
 import 'package:kamon/constant.dart';
 
 class HomeClip extends StatelessWidget {
   final String branchLocation;
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
-  const HomeClip({super.key, required this.branchLocation});
+  HomeClip({super.key, required this.branchLocation});
 
   String _getGreetingMessage() {
     final hour = DateTime.now().hour;
@@ -29,6 +33,13 @@ class HomeClip extends StatelessWidget {
       return 'Hope You Had a Great Day!';
     }
   }
+
+  Future<void> _logout(BuildContext context) async {
+    await secureStorage.delete(key: 'token');
+      GoRouter.of(context).push(AppRouter.KLoginScreen);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,11 +99,12 @@ class HomeClip extends StatelessWidget {
                     color: Colors.white,
                     child: GestureDetector(
                       onTap: () {
-                        // Handle notifications button press
+                        // Handle logout button press
+                        _logout(context);
                       },
                       child: const Center(
                         child: Icon(
-                          Icons.notifications_outlined,
+                          Icons.logout,
                           color: kPrimaryColor,
                         ),
                       ),
