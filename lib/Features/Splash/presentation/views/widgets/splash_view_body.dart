@@ -1,8 +1,10 @@
-import 'dart:async'; // Import dart:async for Future
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:kamon/Features/home/data/get_location.dart';
 import 'package:kamon/core/utils/app_router.dart';
 
@@ -19,6 +21,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
   late Animation<Offset> leftSlidingAnimation;
   late Animation<Offset> rightSlidingAnimation;
   final LocationService _locationService = LocationService();
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
   String branchLocation = 'Unknown';
   int branchId = 0;
 
@@ -38,7 +41,16 @@ class _SplashViewbodyState extends State<SplashViewbody>
   void initState() {
     super.initState();
     initAnimated();
-    getBranchAndNearbyLocations();
+    checkTokenValidity();
+  }
+
+  Future<void> checkTokenValidity() async {
+    String? token = await secureStorage.read(key: 'token');
+    if (token == null || JwtDecoder.isExpired(token)) {
+      navigateToLoginScreen();
+    } else {
+      getBranchAndNearbyLocations();
+    }
   }
 
   Future<void> getBranchAndNearbyLocations() async {
@@ -75,7 +87,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
         branchLocation = 'Failed to determine location';
       });
     } finally {
-      navigateToAppLayout();
+      navigateToHomePage();
     }
   }
 
@@ -89,9 +101,15 @@ class _SplashViewbodyState extends State<SplashViewbody>
     return prefs.getInt('branchId');
   }
 
-  void navigateToAppLayout() {
+  void navigateToLoginScreen() {
     Future.delayed(const Duration(seconds: 1), () {
       GoRouter.of(context).push(AppRouter.KLoginScreen);
+    });
+  }
+
+  void navigateToHomePage() {
+    Future.delayed(const Duration(seconds: 1), () {
+      GoRouter.of(context).push(AppRouter.KHomeView);
     });
   }
 
