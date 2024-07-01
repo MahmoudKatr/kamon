@@ -7,7 +7,6 @@ import 'package:kamon/Features/auth/auth_login/login_state.dart';
 import 'package:kamon/constant.dart';
 import '../../../core/errors/failure.dart';
 
-
 class LoginCubit extends Cubit<LoginState> {
   final Dio dio;
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
@@ -40,6 +39,9 @@ class LoginCubit extends Cubit<LoginState> {
         // Calculate token expiration and store it
         DateTime expirationDate = JwtDecoder.getExpirationDate(loginResponse.token);
         await secureStorage.write(key: 'token_expiration', value: expirationDate.millisecondsSinceEpoch.toString());
+
+        // Print the expiration date
+        print('Token Expiration Date: $expirationDate');
 
         emit(LoginSuccess(loginResponse));
       } else {

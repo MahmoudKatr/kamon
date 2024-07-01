@@ -6,11 +6,31 @@ import 'package:kamon/core/utils/app_router.dart';
 import 'package:provider/provider.dart';
 import 'package:kamon/constant.dart';
 
-class HomeClip extends StatelessWidget {
+class HomeClip extends StatefulWidget {
   final String branchLocation;
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   HomeClip({super.key, required this.branchLocation});
+
+  @override
+  _HomeClipState createState() => _HomeClipState();
+}
+
+class _HomeClipState extends State<HomeClip> {
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  String customerFirstName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCustomerFirstName();
+  }
+
+  Future<void> _loadCustomerFirstName() async {
+    String? firstName = await secureStorage.read(key: 'customer_first_name');
+    setState(() {
+      customerFirstName = firstName ?? '';
+    });
+  }
 
   String _getGreetingMessage() {
     final hour = DateTime.now().hour;
@@ -36,9 +56,8 @@ class HomeClip extends StatelessWidget {
 
   Future<void> _logout(BuildContext context) async {
     await secureStorage.delete(key: 'token');
-      GoRouter.of(context).push(AppRouter.KLoginScreen);
+    GoRouter.of(context).push(AppRouter.KLoginScreen);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +153,7 @@ class HomeClip extends StatelessWidget {
             ),
             const SizedBox(height: 20.0),
             Text(
-              '${_getGreetingMessage()}, $branchLocation Branch',
+              '${_getGreetingMessage()}, $customerFirstName', // Show customer's first name
               style: kPrimaryFont(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
