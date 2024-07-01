@@ -9,9 +9,7 @@ import 'package:kamon/Features/ordars/order_clip.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 
-/// AppLayoutScreen
 class OrderLayoutScreen extends StatelessWidget {
-  /// AppLayoutScreen constructor
   const OrderLayoutScreen({super.key});
 
   @override
@@ -46,11 +44,9 @@ class OrderLayoutScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   margin: const EdgeInsets.all(10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildTabItem(
                         context: context,
@@ -61,13 +57,13 @@ class OrderLayoutScreen extends StatelessWidget {
                       _buildTabItem(
                         context: context,
                         index: 1,
-                        text: 'Confirme',
+                        text: 'Confirmed',
                         isSelected: state == 1,
                       ),
                       _buildTabItem(
                         context: context,
                         index: 2,
-                        text: 'Complete',
+                        text: 'Completed',
                         isSelected: state == 2,
                       ),
                       _buildTabItem(
@@ -79,7 +75,6 @@ class OrderLayoutScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Main content goes here
                 Expanded(
                   child: screens[state],
                 ),
@@ -114,14 +109,16 @@ class OrderLayoutScreen extends StatelessWidget {
                   ]
                 : [],
           ),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Center(
             child: Text(
               text,
               style: TextStyle(
                 color: isSelected ? kSecondaryColor : kPrimaryColor,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontSize: 16, // Adjust font size if needed
               ),
+              overflow: TextOverflow.ellipsis, // Ensure text does not overflow
             ),
           ),
         ),
