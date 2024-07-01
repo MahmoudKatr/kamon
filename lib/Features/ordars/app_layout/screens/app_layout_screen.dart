@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kamon/Features/menu/presentation/all_menu_screen.dart';
-import 'package:kamon/Features/menu/presentation/favorite_menu.dart';
-import 'package:kamon/Features/ordars/activeOrder/active_order_screen.dart';
+import 'package:kamon/Features/ordars/activeOrder/confirmed_order_screen.dart';
+import 'package:kamon/Features/ordars/activeOrder/pending_order_screen.dart';
 import 'package:kamon/Features/ordars/app_layout/controllers/app_layout_cubit.dart';
 import 'package:kamon/Features/ordars/order_clip.dart';
 import 'package:kamon/constant.dart';
@@ -17,7 +17,8 @@ class OrderLayoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screens = <Widget>[
       const ActiceOrderScreen(),
-      FavoritesScreen(),
+      const ConfirmedOrderScreen(),
+      MenuScreen(),
       MenuScreen(),
     ];
 
@@ -53,20 +54,26 @@ class OrderLayoutScreen extends StatelessWidget {
                       _buildTabItem(
                         context: context,
                         index: 0,
-                        text: 'Active',
+                        text: 'Pending',
                         isSelected: state == 0,
                       ),
                       _buildTabItem(
                         context: context,
                         index: 1,
-                        text: 'Complete',
+                        text: 'Confirme',
                         isSelected: state == 1,
                       ),
                       _buildTabItem(
                         context: context,
                         index: 2,
-                        text: 'Cancelled',
+                        text: 'Complete',
                         isSelected: state == 2,
+                      ),
+                      _buildTabItem(
+                        context: context,
+                        index: 3,
+                        text: 'Cancelled',
+                        isSelected: state == 3,
                       ),
                     ],
                   ),
@@ -89,28 +96,32 @@ class OrderLayoutScreen extends StatelessWidget {
     required String text,
     required bool isSelected,
   }) {
-    return GestureDetector(
-      onTap: () => context.read<AppLayoutCubit>().changeIndex(index),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected ? kPrimaryColor : Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: kPrimaryColor.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 10,
-                  ),
-                ]
-              : [],
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        child: Text(
-          text,
-          style: TextStyle(
-            color: isSelected ? kSecondaryColor : kPrimaryColor,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => context.read<AppLayoutCubit>().changeIndex(index),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isSelected ? kPrimaryColor : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: kPrimaryColor.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 10,
+                    ),
+                  ]
+                : [],
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected ? kSecondaryColor : kPrimaryColor,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
           ),
         ),
       ),

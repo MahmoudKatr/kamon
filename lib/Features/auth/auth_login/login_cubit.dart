@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:kamon/Features/auth/auth_login/login_resopnse.dart';
 import 'package:kamon/Features/auth/auth_login/login_state.dart';
-
+import 'package:kamon/constant.dart';
 import '../../../core/errors/failure.dart';
 
 
@@ -18,7 +18,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     try {
       final response = await dio.post(
-        'http://192.168.56.1:4000/admin/customers/login',
+        'http://$baseUrl:4000/admin/customers/login',
         data: {
           'phone': phone,
           'password': password,
