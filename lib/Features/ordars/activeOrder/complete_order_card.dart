@@ -28,12 +28,12 @@ class Order {
   }
 }
 
-class PendingOrder extends StatefulWidget {
+class CompleteOrderCard extends StatefulWidget {
   @override
-  _PendingOrderState createState() => _PendingOrderState();
+  _CompleteOrderCardState createState() => _CompleteOrderCardState();
 }
 
-class _PendingOrderState extends State<PendingOrder> {
+class _CompleteOrderCardState extends State<CompleteOrderCard> {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   Future<List<Order>> fetchOrders() async {
@@ -41,7 +41,7 @@ class _PendingOrderState extends State<PendingOrder> {
     String? customerId = await secureStorage.read(key: 'customer_id');
     if (customerId == null) throw Exception("Customer ID not found");
 
-    final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/pending'));
+    final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/completed'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -72,7 +72,7 @@ class _PendingOrderState extends State<PendingOrder> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No orders found Pending'));
+            return Center(child: Text('No orders found completed'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,

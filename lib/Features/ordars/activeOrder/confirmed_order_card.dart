@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
 import 'package:kamon/constant.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // Model class for Order
 class Order {
@@ -28,24 +28,15 @@ class Order {
   }
 }
 
-class ConfirmedOrderCard extends StatefulWidget {
-  const ConfirmedOrderCard({super.key});
-
+class confirmedOrder extends StatefulWidget {
   @override
-  _ConfirmedOrderCardState createState() => _ConfirmedOrderCardState();
+  _confirmedOrderState createState() => _confirmedOrderState();
 }
 
-class _ConfirmedOrderCardState extends State<ConfirmedOrderCard> {
+class _confirmedOrderState extends State<confirmedOrder> {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-  late Future<Order?> futureOrder;
 
-  @override
-  void initState() {
-    super.initState();
-    futureOrder = fetchOrder();
-  }
-
-  Future<Order?> fetchOrder() async {
+  Future<List<Order>> fetchOrders() async {
     // Retrieve customer_id from secure storage
     String? customerId = await secureStorage.read(key: 'customer_id');
     if (customerId == null) throw Exception("Customer ID not found");
@@ -53,14 +44,11 @@ class _ConfirmedOrderCardState extends State<ConfirmedOrderCard> {
     final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/confirmed'));
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data['data']['orders'].isNotEmpty) {
-        return Order.fromJson(data['data']['orders'][0]);
-      } else {
-        return null;
-      }
+      final jsonResponse = json.decode(response.body);
+      final List orders = jsonResponse['data']['orders'];
+      return orders.map((order) => Order.fromJson(order)).toList();
     } else {
-      throw Exception('Failed to load order');
+      throw Exception('Failed to load orders');
     }
   }
 
@@ -75,104 +63,118 @@ class _ConfirmedOrderCardState extends State<ConfirmedOrderCard> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Order?>(
-      future: futureOrder,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(
-              child: Text('Error: ${snapshot.error}',
-                  style: kPrimaryFont(fontSize: 16, color: Colors.red)));
-        } else if (!snapshot.hasData || snapshot.data == null) {
-          return Center(
-              child: Text('No Order Found',
-                  style: kPrimaryFont(fontSize: 16, color: Colors.grey)));
-        } else {
-          final order = snapshot.data!;
-          final formattedBranchName = capitalizeEachWord(order.branchName);
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
+    return Scaffold(
+      body: FutureBuilder<List<Order>>(
+        future: fetchOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No orders found confirmed'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                final order = snapshot.data![index];
+                return OrderItemCard(order: order, capitalizeEachWord: capitalizeEachWord);
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+}
+
+class OrderItemCard extends StatelessWidget {
+  final Order order;
+  final String Function(String) capitalizeEachWord;
+
+  OrderItemCard({required this.order, required this.capitalizeEachWord});
+
+  @override
+  Widget build(BuildContext context) {
+    final formattedBranchName = capitalizeEachWord(order.branchName);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 5,
+                        offset: Offset(2, 2),
+                      ),
+                    ],
+                  ),
+                  child: Image.network(
+                    testImage,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5,
-                              offset: Offset(2, 2),
-                            ),
-                          ],
-                        ),
-                        child: Image.network(
-                          testImage,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.cover,
-                        ),
+                    Text(
+                      'Order #${order.orderId}',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: kPrimaryFont(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: kItemFontColor,
                       ),
                     ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Order #${order.orderId}',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: kPrimaryFont(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: kItemFontColor,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            formattedBranchName,
-                            style: kSecondaryFont(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: kPrimaryColor,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Total: ${order.orderTotalPrice} EGP',
-                            style: kPrimaryFont(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: kItemFontColor,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Payment: ${order.orderPaymentMethod}',
-                            style: kPrimaryFont(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: kPrimaryColor,
-                            ),
-                          ),
-                        ],
+                    SizedBox(height: 8),
+                    Text(
+                      formattedBranchName,
+                      style: kSecondaryFont(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: kPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Total: ${order.orderTotalPrice} EGP',
+                      style: kPrimaryFont(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: kItemFontColor,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Payment: ${order.orderPaymentMethod}',
+                      style: kPrimaryFont(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: kPrimaryColor,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          );
-        }
-      },
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

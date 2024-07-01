@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kamon/Features/menu/presentation/all_menu_screen.dart';
-import 'package:kamon/Features/ordars/activeOrder/confirmed_order_screen.dart';
-import 'package:kamon/Features/ordars/activeOrder/pending_order_screen.dart';
+import 'package:kamon/Features/ordars/activeOrder/Pending_order_card.dart';
+import 'package:kamon/Features/ordars/activeOrder/cancelled_order_card.dart';
+import 'package:kamon/Features/ordars/activeOrder/complete_order_card.dart';
+import 'package:kamon/Features/ordars/activeOrder/confirmed_order_card.dart';
 import 'package:kamon/Features/ordars/app_layout/controllers/app_layout_cubit.dart';
 import 'package:kamon/Features/ordars/order_clip.dart';
 import 'package:kamon/constant.dart';
@@ -16,10 +17,10 @@ class OrderLayoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screens = <Widget>[
-      const ActiceOrderScreen(),
-      const ConfirmedOrderScreen(),
-      MenuScreen(),
-      MenuScreen(),
+      PendingOrder(),
+      confirmedOrder(),
+      CompleteOrderCard(),
+      CancelledOrder(),
     ];
 
     return BlocProvider(
