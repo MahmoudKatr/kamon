@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kamon/Features/home/presentation/views/widgets/category_datils_screen.dart';
+import 'package:kamon/constant.dart';
 import 'dart:convert';
-import 'package:kamon/Features/menu/model/category_model.dart'; // Ensure this path is correct
-import 'package:kamon/constant.dart'; // Ensure this contains the baseUrl
+
 
 class CategoryListView extends StatefulWidget {
   const CategoryListView({Key? key}) : super(key: key);
@@ -13,7 +13,7 @@ class CategoryListView extends StatefulWidget {
 }
 
 class _CategoryListViewState extends State<CategoryListView> {
-  List<Category> _categories = [];
+  List<Map<String, dynamic>> _categories = [];
 
   @override
   void initState() {
@@ -22,22 +22,24 @@ class _CategoryListViewState extends State<CategoryListView> {
   }
 
   Future<void> _fetchCategories() async {
-    // Make sure your baseUrl includes the IP address or hostname
     String url = 'http://$baseUrl:4000/admin/branch/categories-list';
     try {
       final response = await http.get(Uri.parse(url));
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
-      final List<Category> loadedCategories = [];
+      final List<Map<String, dynamic>> loadedCategories = [];
       if (extractedData['status'] == 'success') {
         for (var categoryData in extractedData['data']) {
-          loadedCategories.add(Category.fromJson(categoryData));
+          loadedCategories.add({
+            'categoryId': categoryData['category_id'],
+            'categoryName': categoryData['category_name'],
+            'picturePath': categoryData['picture_path'],
+          });
         }
       }
       setState(() {
         _categories = loadedCategories;
       });
     } catch (error) {
-      // Ideally, you should handle the error more specifically
       print('An error occurred: $error');
     }
   }
@@ -57,13 +59,16 @@ class _CategoryListViewState extends State<CategoryListView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CategoryDetailScreen(
-                      categoryId: category.categoryId,
-                      categoryName: category.categoryName),
+                      categoryId: category['categoryId'],
+                      categoryName: category['categoryName']),
                 ),
               );
             },
-            child: _buildCategoryItem(category.categoryName,
-                "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
+            child: _buildCategoryItem(
+              category['categoryName'],
+              category['picturePath'] ?? 
+              "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+            ),
           );
         },
       ),
