@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kamon/constant.dart';
 import 'package:kamon/core/social_media.dart/model/get_friend_request_model.dart';
-
-import '../../constant.dart';
 
 class FriendRequestsPage extends StatefulWidget {
   @override
