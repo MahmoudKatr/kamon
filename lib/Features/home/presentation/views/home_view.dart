@@ -7,13 +7,49 @@ import 'package:kamon/Features/home/presentation/views/widgets/best_saller_list_
 import 'package:kamon/Features/home/presentation/views/widgets/home_clip.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   final String branchLocation;
   final int branchId;
 
-  const HomeView(
-      {super.key, required this.branchLocation, required this.branchId});
+  const HomeView({super.key, required this.branchLocation, required this.branchId});
+
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  List<Map<String, String>> bestSellers = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBestSellers();
+  }
+
+  Future<void> fetchBestSellers() async {
+    final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/branch/bestSeller?branchId=${widget.branchId}&startDate=2024-01-01&endDate=2024-12-31'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+setState(() {
+  bestSellers = (data['data'] as List).map<Map<String, String>>((item) {
+    return {
+      'imageUrl': item['fn_item_picture_path']?.toString() ?? testImage,
+      'price': item['fn_item_price'].toString(),
+      'name': item['fn_item_name'].toString(),
+    };
+  }).toList();
+  isLoading = false;
+});
+
+    } else {
+      throw Exception('Failed to load best sellers');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,63 +65,55 @@ class HomeView extends StatelessWidget {
                   children: [
                     ClipPath(
                       clipper: BaseClipper(),
-                      child: HomeClip(branchLocation: branchLocation),
+                      child: HomeClip(branchLocation: widget.branchLocation),
                     ),
-                    // SingleChildScrollView starts right after the ClipPath
-                    const Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'All Categories',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              SizedBox(height: 16.0),
-                              CategoryListView(), // Ensure you have set up a default constructor if needed
-                              SizedBox(height: 24.0),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                    Expanded(
+                      child: isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : SingleChildScrollView(
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Best Seller',
+                                      'All Categories',
                                       style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 24,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    Text(
-                                      'View All',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  ]),
-                              SizedBox(height: 16.0),
-                              BestSellerListView(
-                                bestSellers: [
-                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 1'},
-                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 2'},
-                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 3'},
-                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 5'},
-                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 6'},
-                                  // Add other best selling items as needed
-                                ],
+                                    SizedBox(height: 16.0),
+                                    CategoryListView(),
+                                    SizedBox(height: 24.0),
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Best Seller',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            'View All',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green,
+                                            ),
+                                          ),
+                                        ]),
+                                    SizedBox(height: 16.0),
+                                    BestSellerListView(bestSellers: bestSellers),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
+                            ),
                     ),
                   ],
                 ),
@@ -116,10 +144,11 @@ class BestSellerListView extends StatelessWidget {
           return BestSellerCard(
             imageUrl: bestSellers[index]['imageUrl']!,
             price: bestSellers[index]['price']!,
-            name: bestSellers[index]['name']!, // Ensure 'name' is added to each item
+            name: bestSellers[index]['name']!,
           );
         },
       ),
     );
   }
 }
+
