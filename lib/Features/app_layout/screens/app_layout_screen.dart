@@ -8,6 +8,7 @@ import 'package:kamon/Features/ordars/app_layout/screens/app_layout_screen.dart'
 import 'package:kamon/Features/payment/UI.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import 'package:kamon/core/shared_widget/my_button_nav_bar.dart';
+import 'package:kamon/core/social_media.dart/app_layout_screen.dart';
 
 
 /// AppLayoutScreen
@@ -30,7 +31,7 @@ class AppLayoutScreen extends StatelessWidget {
         branchId: 1,
       ),
       const OrderLayoutScreen(),
-      MenuScreen(),
+      SocialMediaScreen(),
       ChatPage(),
     ];
 

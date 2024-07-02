@@ -35,6 +35,8 @@ class LoginCubit extends Cubit<LoginState> {
         await secureStorage.write(key: 'customer_id', value: decodedToken['customer_id'].toString());
         await secureStorage.write(key: 'customer_first_name', value: decodedToken['customer_first_name']);
         await secureStorage.write(key: 'customer_last_name', value: decodedToken['customer_last_name']);
+        await secureStorage.write(key: 'account_id', value: decodedToken['account_id'].toString());
+        await secureStorage.write(key: 'picture_path', value: decodedToken['picture_path']);
 
         // Calculate token expiration and store it
         DateTime expirationDate = JwtDecoder.getExpirationDate(loginResponse.token);
