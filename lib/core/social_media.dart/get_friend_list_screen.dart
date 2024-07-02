@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kamon/constant.dart';
 
 class FriendsListPage extends StatefulWidget {
@@ -9,17 +10,30 @@ class FriendsListPage extends StatefulWidget {
 }
 
 class _FriendsListPageState extends State<FriendsListPage> {
-  late Future<List<Friend>> futureFriends;
+  Future<List<Friend>>? futureFriends;
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+  String? accountId;
 
   @override
   void initState() {
     super.initState();
-    futureFriends = fetchFriends();
+    _loadAccountId();
   }
 
-  Future<List<Friend>> fetchFriends() async {
+  Future<void> _loadAccountId() async {
+    accountId = await secureStorage.read(key: 'account_id');
+    if (accountId != null) {
+      setState(() {
+        futureFriends = fetchFriends(accountId!);
+      });
+    } else {
+      // Handle case where account_id is not found
+    }
+  }
+
+  Future<List<Friend>> fetchFriends(String accountId) async {
     final response = await http
-        .get(Uri.parse('http://$baseUrl:4000/admin/social/friendsList/301'));
+        .get(Uri.parse('http://$baseUrl:4000/admin/social/friendsList/$accountId'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -33,26 +47,28 @@ class _FriendsListPageState extends State<FriendsListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Friend>>(
-        future: futureFriends,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No friends found'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final friend = snapshot.data![index];
-                return FriendCard(name: friend.name);
+      body: futureFriends == null
+          ? Center(child: CircularProgressIndicator())
+          : FutureBuilder<List<Friend>>(
+              future: futureFriends,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No friends found'));
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final friend = snapshot.data![index];
+                      return FriendCard(name: friend.name);
+                    },
+                  );
+                }
               },
-            );
-          }
-        },
-      ),
+            ),
     );
   }
 }

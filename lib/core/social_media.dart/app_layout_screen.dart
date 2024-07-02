@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kamon/Features/ordars/activeOrder/cancelled_order_card.dart';
-import 'package:kamon/Features/ordars/activeOrder/complete_order_card.dart';
 import 'package:kamon/Features/ordars/app_layout/controllers/app_layout_cubit.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import 'package:kamon/core/social_media.dart/add_request_friend.dart';
 import 'package:kamon/core/social_media.dart/get_friend_list_screen.dart';
+import 'package:kamon/core/social_media.dart/get_friends_request_screen.dart';
 import 'package:kamon/core/social_media.dart/social_media_clip.dart';
 
 class SocialMediaScreen extends StatelessWidget {
@@ -17,7 +17,7 @@ class SocialMediaScreen extends StatelessWidget {
     final screens = <Widget>[
       AddRequestFriend(),
       FriendsListPage(),
-      CompleteOrderCard(),
+      FriendRequestsPage(),
       CancelledOrder(),
     ];
 
