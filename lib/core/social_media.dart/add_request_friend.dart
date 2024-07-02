@@ -188,7 +188,7 @@ class _AddRequestFriendState extends State<AddRequestFriend> {
     int receiverId = account.accountId;
 
     if (senderId != null) {
-      var url = Uri.parse('http://192.168.56.1:4000/admin/social/friend-request');
+      var url = Uri.parse('http://$baseUrl:4000/admin/social/friend-request');
       var headers = {
         'Content-Type': 'application/json'
       };
