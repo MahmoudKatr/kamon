@@ -51,7 +51,7 @@ class SocialMediaScreen extends StatelessWidget {
                       _buildTabItem(
                         context: context,
                         index: 0,
-                        text: 'Request',
+                        text: 'Add',
                         isSelected: state == 0,
                       ),
                       _buildTabItem(
