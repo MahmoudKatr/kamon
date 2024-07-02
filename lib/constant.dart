@@ -12,3 +12,10 @@ const kItemFontColor = Color(0xff391713);
 const testImage =
     'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
 const baseUrl = '192.168.56.1';
+
+const kPrimaryColorChat = Color(0xff2B475E);
+const kLogo = 'assets/images/scholar.png';
+const kMessagesCollections = 'messages';
+const kMessage = 'message';
+const kCreatedAt = 'createdAt';
+const kBeigeColor = Color(0xFFF5F5DC); // Custom beige color

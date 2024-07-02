@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kamon/Features/app_layout/controllers/app_layout_cubit.dart';
+import 'package:kamon/Features/chatbot/chat.dart';
 import 'package:kamon/Features/home/presentation/views/home_view.dart';
 import 'package:kamon/Features/menu/presentation/all_menu_screen.dart';
 import 'package:kamon/Features/ordars/app_layout/screens/app_layout_screen.dart';
@@ -29,8 +30,8 @@ class AppLayoutScreen extends StatelessWidget {
         branchId: 1,
       ),
       const OrderLayoutScreen(),
-      PaymentMethodScreen(),
       MenuScreen(),
+      ChatPage(),
     ];
 
     return BlocProvider(

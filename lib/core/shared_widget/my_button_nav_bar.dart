@@ -52,7 +52,7 @@ class MyBottomNavigationBar extends StatelessWidget {
             ),
             _buildNavItem(
               icon: CustomIcons.vector1_3,
-              label: 'Profile',
+              label: 'ChatBot',
               index: 3,
             ),
           ],
