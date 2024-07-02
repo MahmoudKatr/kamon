@@ -8,7 +8,6 @@ import 'package:kamon/Features/home/presentation/views/widgets/home_clip.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 
-
 class HomeView extends StatelessWidget {
   final String branchLocation;
   final int branchId;
@@ -50,7 +49,6 @@ class HomeView extends StatelessWidget {
                               ),
                               SizedBox(height: 16.0),
                               CategoryListView(), // Ensure you have set up a default constructor if needed
-
                               SizedBox(height: 24.0),
                               Row(
                                   mainAxisAlignment:
@@ -76,58 +74,11 @@ class HomeView extends StatelessWidget {
                               SizedBox(height: 16.0),
                               BestSellerListView(
                                 bestSellers: [
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {
-                                    'imageUrl':
-                                        'https://example.com/image1.jpg',
-                                    'price': '103.0'
-                                  },
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  // Add other best selling items as needed
-                                ],
-                              ),
-                              BestSellerListView(
-                                bestSellers: [
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {
-                                    'imageUrl':
-                                        'https://example.com/image1.jpg',
-                                    'price': '103.0'
-                                  },
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {
-                                    'imageUrl':
-                                        'https://example.com/image1.jpg',
-                                    'price': '103.0'
-                                  },
-                                  {
-                                    'imageUrl':
-                                        'https://example.com/image1.jpg',
-                                    'price': '103.0'
-                                  },
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  // Add other best selling items as needed
-                                ],
-                              ),
-                              BestSellerListView(
-                                bestSellers: [
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {'imageUrl': testImage, 'price': '103.0'},
-                                  {
-                                    'imageUrl':
-                                        'https://example.com/image1.jpg',
-                                    'price': '103.0'
-                                  },
-                                  {
-                                    'imageUrl':
-                                        'https://example.com/image1.jpg',
-                                    'price': '103.0'
-                                  },
-                                  {'imageUrl': testImage, 'price': '103.0'},
+                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 1'},
+                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 2'},
+                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 3'},
+                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 5'},
+                                  {'imageUrl': testImage, 'price': '103.0', 'name': 'Item 6'},
                                   // Add other best selling items as needed
                                 ],
                               ),
@@ -152,8 +103,7 @@ class HomeView extends StatelessWidget {
 class BestSellerListView extends StatelessWidget {
   final List<Map<String, String>> bestSellers;
 
-  const BestSellerListView({Key? key, required this.bestSellers})
-      : super(key: key);
+  const BestSellerListView({Key? key, required this.bestSellers}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +116,7 @@ class BestSellerListView extends StatelessWidget {
           return BestSellerCard(
             imageUrl: bestSellers[index]['imageUrl']!,
             price: bestSellers[index]['price']!,
+            name: bestSellers[index]['name']!, // Ensure 'name' is added to each item
           );
         },
       ),
