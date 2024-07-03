@@ -87,7 +87,7 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
   Future<void> _fetchRecommendedItemsFromServer(int itemId) async {
     try {
       final response = await http.get(Uri.parse(
-          'http://$baseUrl:4000/admin/menu/itemRecommendations/$itemId'));
+          'http://192.168.10.01:4000/admin/menu/itemRecommendations/$itemId'));
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
