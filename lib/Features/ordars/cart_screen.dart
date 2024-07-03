@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kamon/Features/ordars/non_virtual_order/data/post_non_virual.dart';
 import 'package:kamon/Features/ordars/non_virtual_order/model/non_virual_model.dart';
 import 'package:provider/provider.dart';
@@ -155,11 +156,20 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
   Future<void> _placeOrder(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
+    final FlutterSecureStorage secureStorage = FlutterSecureStorage();
     int? branchId = prefs.getInt('branchId');
+    String? customerId = await secureStorage.read(key: 'customer_id');
 
     if (branchId == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Failed to get branch information'),
+      ));
+      return;
+    }
+
+    if (customerId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to get customer information'),
       ));
       return;
     }
@@ -174,7 +184,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
     }).toList();
 
     Order order = Order(
-      customerId: '2',
+      customerId: customerId,
       branchId: branchId.toString(),
       orderType: 'delivery',
       orderStatus: 'pending',
@@ -236,20 +246,4 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
       ),
     );
   }
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: ChangeNotifierProvider(
-        create: (_) => CartProvider(),
-        child: Builder(
-          builder: (context) {
-            return CartScreen(cart: Provider.of<CartProvider>(context));
-          },
-        ),
-      ),
-    ),
-  );
 }
