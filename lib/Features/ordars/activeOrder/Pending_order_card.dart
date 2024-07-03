@@ -117,7 +117,7 @@ class OrderItemCard extends StatelessWidget {
 
   Future<void> cancelOrder(int orderId) async {
     final response = await http.patch(
-      Uri.parse('https://54.235.40.102.nip.io/user/order/updateorderStatus'),
+      Uri.parse('https://$baseUrl/user/order/updateorderStatus'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
