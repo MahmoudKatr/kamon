@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:kamon/constant.dart';
 import 'package:provider/provider.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
 import 'package:kamon/Features/ordars/data/cart_provider.dart';
@@ -54,8 +55,8 @@ class RecommendedItems extends StatelessWidget {
                                             null &&
                                         item.localPicturePath!.isNotEmpty
                                     ? FileImage(File(item.localPicturePath!))
-                                    : NetworkImage(item.picturePath ??
-                                            'https://images.pexels.com/photos/1352274/pexels-photo-1352274.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')
+                                    : NetworkImage(
+                                            item.picturePath ?? testImage)
                                         as ImageProvider,
                                 backgroundColor: Colors.transparent,
                               ),
