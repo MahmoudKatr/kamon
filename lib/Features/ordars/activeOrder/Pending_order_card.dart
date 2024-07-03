@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:kamon/constant.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:async';
 
 // Model class for Order
 class Order {
@@ -35,18 +36,40 @@ class PendingOrder extends StatefulWidget {
 
 class _PendingOrderState extends State<PendingOrder> {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final ValueNotifier<List<Order>> _ordersNotifier = ValueNotifier([]);
+  late Timer _timer;
 
-  Future<List<Order>> fetchOrders() async {
+  @override
+  void initState() {
+    super.initState();
+    _startPolling();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  void _startPolling() {
+    _fetchOrders(); // Initial fetch
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _fetchOrders();
+    });
+  }
+
+  Future<void> _fetchOrders() async {
     // Retrieve customer_id from secure storage
     String? customerId = await secureStorage.read(key: 'customer_id');
     if (customerId == null) throw Exception("Customer ID not found");
 
-    final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/pending'));
+    final response = await http.get(Uri.parse(
+        'http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/pending'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       final List orders = jsonResponse['data']['orders'];
-      return orders.map((order) => Order.fromJson(order)).toList();
+      _ordersNotifier.value = orders.map((order) => Order.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
     }
@@ -64,21 +87,18 @@ class _PendingOrderState extends State<PendingOrder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Order>>(
-        future: fetchOrders(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+      body: ValueListenableBuilder<List<Order>>(
+        valueListenable: _ordersNotifier,
+        builder: (context, orders, child) {
+          if (orders.isEmpty) {
             return Center(child: Text('No orders found Pending'));
           } else {
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: orders.length,
               itemBuilder: (context, index) {
-                final order = snapshot.data![index];
-                return OrderItemCard(order: order, capitalizeEachWord: capitalizeEachWord);
+                final order = orders[index];
+                return OrderItemCard(
+                    order: order, capitalizeEachWord: capitalizeEachWord, onCancel: _fetchOrders);
               },
             );
           }
@@ -91,8 +111,29 @@ class _PendingOrderState extends State<PendingOrder> {
 class OrderItemCard extends StatelessWidget {
   final Order order;
   final String Function(String) capitalizeEachWord;
+  final VoidCallback onCancel;
 
-  OrderItemCard({required this.order, required this.capitalizeEachWord});
+  OrderItemCard({required this.order, required this.capitalizeEachWord, required this.onCancel});
+
+  Future<void> cancelOrder(int orderId) async {
+    final response = await http.patch(
+      Uri.parse('https://54.235.40.102.nip.io/user/order/updateorderStatus'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'orderId': orderId.toString(),
+        'orderStatus': 'cancelled',
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      print('Order cancelled successfully');
+      onCancel(); // Call the onCancel callback to refresh the orders list
+    } else {
+      throw Exception('Failed to cancel the order');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,6 +207,34 @@ class OrderItemCard extends StatelessWidget {
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: kPrimaryColor,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red, // Background color
+                        foregroundColor: Colors.white, // Text color
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () async {
+                        try {
+                          await cancelOrder(order.orderId);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Order cancelled successfully'),
+                          ));
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Failed to cancel the order'),
+                          ));
+                        }
+                      },
+                      child: Text(
+                        'Cancel Order',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
