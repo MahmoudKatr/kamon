@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/social_media.dart/model/get_friend_request_model.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class FriendRequestsPage extends StatefulWidget {
   @override
@@ -55,6 +57,24 @@ class FriendRequestCard extends StatefulWidget {
 
 class _FriendRequestCardState extends State<FriendRequestCard> {
   bool _isClicked = false;
+
+  Future<void> _updateFriendRequest(String requestId, String status) async {
+    final url = Uri.parse('https://$baseUrl/admin/social/updateFriendRequest');
+    final response = await http.patch(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({
+        'requestId': requestId,
+        'requestStatus': status,
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update friend request');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +135,13 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle confirm action
+                      onPressed: () async {
+                        try {
+                          await _updateFriendRequest(widget.request.id.toString(), 'accepted');
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend request accepted')));
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to accept friend request')));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimaryColor,
@@ -134,8 +159,13 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
                     ),
                     SizedBox(width: 10),
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle delete action
+                      onPressed: () async {
+                        try {
+                          await _updateFriendRequest(widget.request.id.toString(), 'rejected');
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend request rejected')));
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to reject friend request')));
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 116, 99, 99),

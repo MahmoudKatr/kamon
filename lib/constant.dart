@@ -11,7 +11,7 @@ const kfillColor = Color(0xffDAE4E0);
 const kItemFontColor = Color(0xff391713);
 const testImage =
     'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
-const baseUrl = '192.168.56.1';
+const baseUrl = '54.235.40.102.nip.io';
 
 const kPrimaryColorChat = Color(0xff2B475E);
 const kLogo = 'assets/images/scholar.png';
