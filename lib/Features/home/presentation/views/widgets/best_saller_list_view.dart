@@ -5,7 +5,11 @@ class BestSellerCard extends StatelessWidget {
   final String price;
   final String name;
 
-  const BestSellerCard({super.key, required this.imageUrl, required this.price, required this.name});
+  const BestSellerCard(
+      {super.key,
+      required this.imageUrl,
+      required this.price,
+      required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +23,7 @@ class BestSellerCard extends StatelessWidget {
             color: Colors.black.withOpacity(0.2),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -47,7 +51,8 @@ class BestSellerCard extends StatelessWidget {
                 return Center(
                   child: CircularProgressIndicator(
                     value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
                         : null,
                   ),
                 );
@@ -62,7 +67,7 @@ class BestSellerCard extends StatelessWidget {
                   color: Colors.black.withOpacity(0.5),
                   child: Text(
                     name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -75,8 +80,8 @@ class BestSellerCard extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   color: Colors.black.withOpacity(0.5),
                   child: Text(
-                    '\$$price',
-                    style: TextStyle(
+                    '$price EGP',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,

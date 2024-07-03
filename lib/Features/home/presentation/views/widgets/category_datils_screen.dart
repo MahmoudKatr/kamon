@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
+import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import '../../../../menu/data/get_menu.dart';
 
 class MenuItemCard extends StatelessWidget {
@@ -10,90 +13,120 @@ class MenuItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        ClipPath(
-          clipper: CustomCardClipper(),
-          child: Card(
-            margin: const EdgeInsets.all(10),
-            elevation: 5,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                item.localPicturePath != null &&
-                        File(item.localPicturePath!).existsSync()
-                    ? Image.file(
-                        File(item.localPicturePath!),
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: 150,
-                      )
-                    : (item.picturePath != null
-                        ? Image.network(
-                            item.picturePath!,
+    return Card(
+      margin: const EdgeInsets.all(10),
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.circular(15), // Consistent border radius for the card
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(
+            15), // Apply border radius to everything inside
+        child: GestureDetector(
+          onTap: () {
+            final String menuItemJson = jsonEncode(item.toJson());
+            GoRouter.of(context).push(
+              '/menu',
+              extra: menuItemJson, // Serialize the MenuItem to JSON
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Stack(
+                  children: [
+                    item.localPicturePath != null &&
+                            File(item.localPicturePath!).existsSync()
+                        ? Image.file(
+                            File(item.localPicturePath!),
                             fit: BoxFit.cover,
                             width: double.infinity,
-                            height: 150,
+                            height: double
+                                .infinity, // Use full height of the expanded widget
                           )
-                        : const Icon(Icons.broken_image, size: 50)),
-                Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(item.itemName,
-                          style: const TextStyle(
-                              fontSize: 20.0, fontWeight: FontWeight.bold)),
-                      Text('\$${double.parse(item.price).toStringAsFixed(2)}',
-                          style: TextStyle(
-                              fontSize: 16.0, color: Colors.grey[600])),
-                      if (item.vegetarian)
-                        const Row(
-                          children: [
-                            Icon(Icons.eco, color: Colors.green, size: 20),
-                            SizedBox(width: 4),
-                            Text(
-                              'Vegetarian',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.green,
-                              ),
-                            ),
-                            SizedBox(width: 8),
+                        : (item.picturePath != null
+                            ? Image.network(
+                                item.picturePath!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              )
+                            : const Icon(Icons.broken_image, size: 50)),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(0.0),
+                            Colors.black.withOpacity(0.5),
                           ],
                         ),
-                      if (item.healthy)
-                        const Row(
-                          children: [
-                            Icon(Icons.favorite, color: Colors.red, size: 20),
-                            SizedBox(width: 4),
-                            Text(
-                              'Healthy',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      item.itemName,
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow
+                          .ellipsis, // Ensure text does not exceed one line
+                    ),
+                    Text(
+                      '${double.parse(item.price).toStringAsFixed(2)} EGP',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    if (item.vegetarian)
+                      const Row(
+                        children: [
+                          Icon(Icons.eco, color: Colors.green, size: 20),
+                          SizedBox(width: 4),
+                          Text(
+                            'Vegetarian',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                        ],
+                      ),
+                    if (item.healthy)
+                      const Row(
+                        children: [
+                          Icon(Icons.favorite, color: Colors.red, size: 20),
+                          SizedBox(width: 4),
+                          Text(
+                            'Healthy',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-        Positioned(
-          bottom: 10,
-          right: 10,
-          child: FloatingActionButton(
-            onPressed: () {
-              // Add your onPressed code here!
-            },
-            child: const Icon(Icons.add),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
@@ -155,33 +188,5 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
         },
       ),
     );
-  }
-}
-
-class CustomCardClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(0, 0);
-    path.lineTo(size.width, 0);
-    path.lineTo(size.width, size.height - 70);
-
-    // Add small curve to the right top corner near the button
-    path.quadraticBezierTo(
-        size.width - 10, size.height - 70, size.width - 10, size.height - 80);
-
-    // Add small curve to the left bottom corner near the button
-    path.lineTo(size.width - 80, size.height - 80);
-    path.quadraticBezierTo(
-        size.width - 70, size.height - 70, size.width - 80, size.height);
-
-    path.lineTo(0, size.height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
   }
 }

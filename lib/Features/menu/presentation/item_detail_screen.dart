@@ -5,6 +5,7 @@ import 'package:kamon/Features/menu/presentation/item_screen_clip_path.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import 'package:kamon/Features/menu/presentation/item_card.dart';
+import 'dart:io';
 
 class ItemDetailScreen extends StatelessWidget {
   final MenuItem menuItem;
@@ -49,7 +50,7 @@ class ItemDetailScreen extends StatelessWidget {
                     CircularImageWithShadow(
                       imageUrl: menuItem.picturePath != null &&
                               menuItem.picturePath!.isNotEmpty
-                          ? 'http://$baseUrl:4000/${menuItem.picturePath}'
+                          ? menuItem.picturePath!
                           : testImage, // Use a default image if picturePath is null or empty
                       size: 150.0,
                     ),
