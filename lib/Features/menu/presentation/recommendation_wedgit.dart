@@ -43,7 +43,7 @@ class RecommendedItems extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      width: 160, // Fixed width of each item
+                      width: 100, // Fixed width of each item
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         children: [
@@ -80,7 +80,7 @@ class RecommendedItems extends StatelessWidget {
                               height: 30,
                               width: 30,
                               child: FloatingActionButton(
-                                backgroundColor: Colors.green,
+                                backgroundColor: kPrimaryColor,
                                 child: const Icon(Icons.add, size: 16),
                                 onPressed: () {
                                   Provider.of<CartProvider>(context,

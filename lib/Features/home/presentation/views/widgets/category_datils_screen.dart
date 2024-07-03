@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kamon/Features/home/presentation/views/widgets/category_cliper.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
+import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import '../../../../menu/data/get_menu.dart';
 
@@ -81,8 +83,7 @@ class MenuItemCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
-                      overflow: TextOverflow
-                          .ellipsis, // Ensure text does not exceed one line
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       '${double.parse(item.price).toStringAsFixed(2)} EGP',
@@ -155,37 +156,62 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.categoryName),
-      ),
-      body: FutureBuilder<List<MenuItem>>(
-        future: _menuItemsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
-            final items = snapshot.data!
-                .where((item) => item.categoryId == widget.categoryId)
-                .toList();
-            if (items.isEmpty) {
-              return const Center(child: Text("No items found"));
-            }
-            return GridView.builder(
-              padding: const EdgeInsets.all(10),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: items.length,
-              itemBuilder: (context, index) => MenuItemCard(item: items[index]),
-            );
-          }
-          return const Center(child: Text("No items found"));
-        },
+      body: Column(
+        children: [
+          ClipPath(
+            clipper:
+                BaseClipper(), // Ensures the top part is clipped   ' ${widget.categoryName}'
+            child: Container(
+              color: kPrimaryColor, // Background color for visual clarity
+              height: 130, // Fixed height for the clipped area
+              width: double.infinity,
+              child: Center(
+                child: Text(
+                  ' ${widget.categoryName}',
+                  style: kPrimaryFont(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: kSecondaryColor,
+                  ),
+                ),
+              ), // Just a placeholder
+            ),
+          ),
+          Expanded(
+            // Ensures the remaining space is filled by GridView
+            child: FutureBuilder<List<MenuItem>>(
+              future: _menuItemsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final items = snapshot.data!
+                      .where((item) => item.categoryId == widget.categoryId)
+                      .toList();
+                  if (items.isEmpty) {
+                    return const Center(child: Text("No items found"));
+                  }
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(10),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) =>
+                        MenuItemCard(item: items[index]),
+                  );
+                }
+                return const Center(child: Text("No items found"));
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

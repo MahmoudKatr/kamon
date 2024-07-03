@@ -386,11 +386,11 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.green,
+                    backgroundColor: kPrimaryColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(13),
                     ),
                   ),
                   child: const Text('Add to Cart'),
