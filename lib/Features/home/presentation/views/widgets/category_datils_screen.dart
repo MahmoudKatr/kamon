@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -193,7 +192,6 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                       .where((item) => item.categoryId == widget.categoryId)
                       .toList();
 
-                  log(snapshot.data.toString());
                   if (items.isEmpty) {
                     return const Center(child: Text("No items found"));
                   }

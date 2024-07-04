@@ -165,6 +165,7 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
     }
   }
 
+  // ignore: unused_element
   void _placeOrder(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     int? branchId = prefs.getInt('branchId');
@@ -402,7 +403,7 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
                 const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: () {
-                    GoRouter.of(context).push(AppRouter.KCartScreen);
+                    GoRouter.of(context).push(AppRouter.kCartScreen);
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,

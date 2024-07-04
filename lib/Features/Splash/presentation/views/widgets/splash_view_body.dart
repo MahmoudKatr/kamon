@@ -103,13 +103,13 @@ class _SplashViewbodyState extends State<SplashViewbody>
 
   void navigateToLoginScreen() {
     Future.delayed(const Duration(seconds: 1), () {
-      GoRouter.of(context).push(AppRouter.KLoginScreen);
+      GoRouter.of(context).push(AppRouter.kLoginScreen);
     });
   }
 
   void navigateToHomePage() {
     Future.delayed(const Duration(seconds: 1), () {
-      GoRouter.of(context).push(AppRouter.KHomeView);
+      GoRouter.of(context).push(AppRouter.kHomeView);
     });
   }
 

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:kamon/constant.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:kamon/constant.dart';
 
 // Model class for Order
 class Order {
@@ -28,15 +29,16 @@ class Order {
   }
 }
 
-class confirmedOrder extends StatefulWidget {
-  const confirmedOrder({super.key});
+class ConfirmedOrder extends StatefulWidget {
+  const ConfirmedOrder({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
   _confirmedOrderState createState() => _confirmedOrderState();
 }
 
-class _confirmedOrderState extends State<confirmedOrder> {
+// ignore: camel_case_types
+class _confirmedOrderState extends State<ConfirmedOrder> {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<List<Order>> fetchOrders() async {

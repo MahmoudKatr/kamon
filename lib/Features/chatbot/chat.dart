@@ -19,14 +19,16 @@ class _ChatPageState extends State<ChatPage> {
   List<String> chatHistory = []; // Store chat history
   List<String> chatInputHistory = []; // Store chat history
   String url = '';
-  String input_message = '';
+  String inputMessage = '';
   final TextEditingController _textEditingController = TextEditingController();
   final _controller = ScrollController();
 
   final SpeechToText _speechToText = SpeechToText();
   bool isListening = false; // Variable to track the listening state
+  // ignore: unused_field
   bool _speechEnabled = false;
   String _wordsSpoken = "";
+  // ignore: unused_field
   double _confidenceLevel = 0;
 
   @override
@@ -66,14 +68,14 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() async {
-    input_message = _wordsSpoken;
-    url = 'https://final-chabot.onrender.com/predict?message=$input_message';
-    if (input_message.isNotEmpty) {
-      chatInputHistory.add(input_message.toString());
+    inputMessage = _wordsSpoken;
+    url = 'https://final-chabot.onrender.com/predict?message=$inputMessage';
+    if (inputMessage.isNotEmpty) {
+      chatInputHistory.add(inputMessage.toString());
       _textEditingController.clear();
       final data = await fetchData(url);
       final decoded = jsonDecode(data);
-      input_message = '';
+      inputMessage = '';
       _wordsSpoken = '';
       setState(() {
         chatHistory.add(decoded['answer'][0]); // Use only the first element
@@ -126,9 +128,9 @@ class _ChatPageState extends State<ChatPage> {
                       controller: _textEditingController,
                       onChanged: (value) {
                         setState(() {
-                          input_message = value;
+                          inputMessage = value;
                           url =
-                              'https://final-chabot.onrender.com/predict?message=$input_message';
+                              'https://final-chabot.onrender.com/predict?message=$inputMessage';
                         });
                       },
                       decoration: const InputDecoration(
@@ -168,12 +170,12 @@ class _ChatPageState extends State<ChatPage> {
                   const SizedBox(width: 5),
                   ElevatedButton(
                     onPressed: () async {
-                      if (input_message.isNotEmpty) {
-                        chatInputHistory.add(input_message.toString());
+                      if (inputMessage.isNotEmpty) {
+                        chatInputHistory.add(inputMessage.toString());
                         _textEditingController.clear();
                         final data = await fetchData(url);
                         final decoded = jsonDecode(data);
-                        input_message = '';
+                        inputMessage = '';
                         setState(() {
                           chatHistory.add(decoded['answer']
                               [0]); // Use only the first element

@@ -131,7 +131,7 @@ class _FavoriteItemCardState extends State<FavoriteItemCard> {
                 children: [
                   CircleAvatar(
                     backgroundImage:
-                        NetworkImage(widget.menuItem.picturePath ?? testImage),
+                        NetworkImage(widget.menuItem.picturePath),
                     radius: 30,
                   ),
                   const SizedBox(width: 16),

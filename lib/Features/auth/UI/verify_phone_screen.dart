@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:kamon/Features/auth/UI/add_account.dart';
 import 'package:kamon/Features/auth/UI/login_screen.dart';
-import 'package:kamon/Features/auth/UI/signUp_screen.dart';
+import 'package:kamon/Features/auth/UI/sign_up_screen.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 

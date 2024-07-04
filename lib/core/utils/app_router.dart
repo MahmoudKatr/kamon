@@ -11,10 +11,10 @@ import 'package:kamon/Features/ordars/data/cart_provider.dart';
 import 'package:provider/provider.dart';
 
 abstract class AppRouter {
-  static const KHomeView = '/homeView';
-  static const KItemScreen = '/itemScreen';
-  static const KCartScreen = '/cartScreen';
-  static const KLoginScreen = '/loginScreen';
+  static const kHomeView = '/homeView';
+  static const kItemScreen = '/itemScreen';
+  static const kCartScreen = '/cartScreen';
+  static const kLoginScreen = '/loginScreen';
 
   static final router = GoRouter(
     routes: [
@@ -23,14 +23,14 @@ abstract class AppRouter {
         builder: (context, state) => const SplashView(),
       ),
       GoRoute(
-        path: KHomeView,
+        path: kHomeView,
         builder: (context, state) => const AppLayoutScreen(
           branchId: 1,
           branchLocation: '',
         ),
       ),
       GoRoute(
-        path: KLoginScreen,
+        path: kLoginScreen,
         builder: (context, state) => const LoginScreen(
           branchLocation: '',
         ),
@@ -48,7 +48,7 @@ abstract class AppRouter {
         },
       ),
       GoRoute(
-        path: KCartScreen,
+        path: kCartScreen,
         builder: (context, state) => Consumer<CartProvider>(
           builder: (context, cart, child) => CartScreen(cart: cart),
         ),

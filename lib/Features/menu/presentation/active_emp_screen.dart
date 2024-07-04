@@ -95,19 +95,17 @@ class _ActiveEmployeeScreenState extends State<ActiveEmployeeScreen> {
     });
   }
 
-  Widget NoInternetWidget() {
+  Widget noInternetWidget() {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Can\'t connect to the internet. Please check your connection',
-              style: TextStyle(fontSize: 22),
-            ),
-            Image.asset('assets/images/undraw_bug_fixing_oc7a.png'),
-          ],
-        ),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          const Text(
+            'Can\'t connect to the internet. Please check your connection',
+            style: TextStyle(fontSize: 22),
+          ),
+          Image.asset('assets/images/undraw_bug_fixing_oc7a.png'),
+        ],
       ),
     );
   }

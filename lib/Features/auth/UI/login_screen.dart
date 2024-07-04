@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             // Navigate to the homepage
-            GoRouter.of(context).push(AppRouter.KHomeView);
+            GoRouter.of(context).push(AppRouter.kHomeView);
           } else if (state is LoginFailure) {
             // Show an error message
             ScaffoldMessenger.of(context).showSnackBar(

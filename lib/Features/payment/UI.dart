@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kamon/Features/payment/CustomCreditCardWidget.dart';
+import 'package:kamon/Features/payment/custom_credit_card_widget.dart';
 import 'package:kamon/Features/payment/payment_methods_list_view.dart';
 
 class PaymentMethodScreen extends StatefulWidget {

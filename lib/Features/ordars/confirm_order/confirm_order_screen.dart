@@ -6,6 +6,7 @@ class BranchLocator extends StatefulWidget {
   const BranchLocator({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _BranchLocatorState createState() => _BranchLocatorState();
 }
 

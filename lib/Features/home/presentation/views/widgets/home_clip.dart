@@ -58,7 +58,7 @@ class _HomeClipState extends State<HomeClip> {
   Future<void> _logout(BuildContext context) async {
     await secureStorage.delete(key: 'token');
     // ignore: use_build_context_synchronously
-    GoRouter.of(context).push(AppRouter.KLoginScreen);
+    GoRouter.of(context).push(AppRouter.kLoginScreen);
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kamon/Features/ordars/activeOrder/Pending_order_card.dart';
+import 'package:kamon/Features/ordars/activeOrder/pending_order_card.dart';
 import 'package:kamon/Features/ordars/activeOrder/cancelled_order_card.dart';
 import 'package:kamon/Features/ordars/activeOrder/complete_order_card.dart';
 import 'package:kamon/Features/ordars/activeOrder/confirmed_order_card.dart';
@@ -16,7 +16,7 @@ class OrderLayoutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screens = <Widget>[
       const PendingOrder(),
-      const confirmedOrder(),
+      const ConfirmedOrder(),
       const CompleteOrderCard(),
       const CancelledOrder(),
     ];
