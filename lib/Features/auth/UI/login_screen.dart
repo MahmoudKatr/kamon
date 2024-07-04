@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kamon/Features/auth/UI/signUp_screen.dart';
+import 'package:kamon/Features/auth/UI/verify_phone_screen.dart';
 import 'package:kamon/Features/auth/auth_login/login_cubit.dart';
 import 'package:kamon/Features/auth/auth_login/login_state.dart';
-import 'package:kamon/Features/home/presentation/views/home_view.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import 'package:kamon/core/utils/app_router.dart';
@@ -142,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
-                        hintText: '********',
+                        hintText: '',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
@@ -202,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SignUpScreen()),
+                              builder: (context) => const VerifyPhoneScreen()),
                         );
                       },
                       child: RichText(
@@ -233,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
+    ),
+);
+}
 }
