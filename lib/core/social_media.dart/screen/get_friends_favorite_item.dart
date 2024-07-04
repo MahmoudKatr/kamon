@@ -17,8 +17,6 @@ class _FavoriteItemsScreenState extends State<FavoriteItemsScreen> {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
   String? accountId;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -44,6 +42,20 @@ class _FavoriteItemsScreenState extends State<FavoriteItemsScreen> {
   }
 
   List<Widget> buildFavoriteCards() {
+    if (favoriteItems.isEmpty) {
+      return [
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'No favorite items available.',
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ),
+        ),
+      ];
+    }
+
     List<Widget> cards = [];
 
     for (var favoriteItem in favoriteItems) {
