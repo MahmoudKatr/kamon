@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kamon/Features/home/data/seach_view_model.dart';
 import 'package:kamon/Features/home/presentation/views/widgets/category_list_View.dart';
 import 'package:kamon/Features/home/presentation/views/widgets/srach_result_list.dart';
@@ -22,13 +23,16 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
   List<Map<String, String>> bestSellers = [];
+  List<Map<String, String>> recommendations = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchBestSellers();
+    fetchCustomerRecommendations();
   }
 
   Future<void> fetchBestSellers() async {
@@ -52,6 +56,54 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  Future<void> fetchCustomerRecommendations() async {
+    String? customerId = await secureStorage.read(key: 'customer_id');
+    if (customerId == null) {
+      throw Exception('Customer ID not found in secure storage');
+    }
+
+    final response = await http.get(Uri.parse(
+        'https://$baseUrl/admin/menu/customerRecommendations/$customerId'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      List<int> recommendedIds =
+          data.keys.map<int>((id) => int.parse(id)).toList();
+
+      for (int id in recommendedIds) {
+        await fetchRecommendationDetails(id);
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } else {
+      throw Exception('Failed to load customer recommendations');
+    }
+  }
+
+  Future<void> fetchRecommendationDetails(int id) async {
+    final response = await http.get(Uri.parse(
+        'https://$baseUrl/admin/menu/branchMenuFilter/${widget.branchId}'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final item = data['data']
+          .firstWhere((item) => item['item_id'] == id, orElse: () => null);
+
+      if (item != null) {
+        setState(() {
+          recommendations.add({
+            'imageUrl': item['picture_path']?.toString() ?? testImage,
+            'price': item['price'].toString(),
+            'name': item['item_name'].toString(),
+          });
+        });
+      }
+    } else {
+      throw Exception('Failed to load recommendation details');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -70,14 +122,14 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     Expanded(
                       child: isLoading
-                          ? const Center(child: CircularProgressIndicator())
+                          ? Center(child: CircularProgressIndicator())
                           : SingleChildScrollView(
                               child: Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: EdgeInsets.all(16.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
+                                    Text(
                                       'All Categories',
                                       style: TextStyle(
                                         fontSize: 24,
@@ -85,10 +137,10 @@ class _HomeViewState extends State<HomeView> {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    const SizedBox(height: 16.0),
-                                    const CategoryListView(),
-                                    const SizedBox(height: 24.0),
-                                    const Row(
+                                    SizedBox(height: 16.0),
+                                    CategoryListView(),
+                                    SizedBox(height: 24.0),
+                                    Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -101,9 +153,21 @@ class _HomeViewState extends State<HomeView> {
                                             ),
                                           ),
                                         ]),
-                                    const SizedBox(height: 16.0),
+                                    SizedBox(height: 16.0),
                                     BestSellerListView(
                                         bestSellers: bestSellers),
+                                    SizedBox(height: 16.0),
+                                    Text(
+                                      'Recommendation',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    SizedBox(height: 16.0),
+                                    RecommendationListView(
+                                        recommendations: recommendations),
                                   ],
                                 ),
                               ),
@@ -140,6 +204,31 @@ class BestSellerListView extends StatelessWidget {
             imageUrl: bestSellers[index]['imageUrl']!,
             price: bestSellers[index]['price']!,
             name: bestSellers[index]['name']!,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class RecommendationListView extends StatelessWidget {
+  final List<Map<String, String>> recommendations;
+
+  const RecommendationListView({Key? key, required this.recommendations})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: recommendations.length,
+        itemBuilder: (context, index) {
+          return BestSellerCard(
+            imageUrl: recommendations[index]['imageUrl']!,
+            price: recommendations[index]['price']!,
+            name: recommendations[index]['name']!,
           );
         },
       ),
