@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:kamon/Features/auth/UI/signin_screen.dart';
+import 'package:kamon/Features/auth/UI/signUp_screen.dart';
 import 'package:kamon/Features/auth/auth_login/login_cubit.dart';
 import 'package:kamon/Features/auth/auth_login/login_state.dart';
 import 'package:kamon/Features/home/presentation/views/home_view.dart';
@@ -150,7 +150,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         fillColor: const Color(0xffDAE4E0),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscureText ? Icons.visibility : Icons.visibility_off,
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
                           onPressed: _togglePasswordVisibility,
                         ),
