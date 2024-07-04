@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
-                        hintText: '',
+                        hintText: '***************',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
