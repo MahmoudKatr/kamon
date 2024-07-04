@@ -15,9 +15,9 @@ class _BranchLocatorState extends State<BranchLocator> {
   String _branchMessage = 'Loading...';
 
   final Map<String, List<double>> branches = {
-    'Cairo': [30.0444, 31.2357],
     'Alexandria': [31.2001, 29.9187],
     'Port Said': [31.2653, 32.3019],
+    'Cairo': [30.0444, 31.2357],
   };
 
   @override

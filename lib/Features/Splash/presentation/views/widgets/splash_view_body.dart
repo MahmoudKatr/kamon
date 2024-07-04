@@ -1,12 +1,13 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:kamon/Features/home/data/get_location.dart';
 import 'package:kamon/core/utils/app_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashViewbody extends StatefulWidget {
   const SplashViewbody({super.key});
@@ -26,15 +27,15 @@ class _SplashViewbodyState extends State<SplashViewbody>
   int branchId = 0;
 
   final Map<String, List<double>> branches = {
-    'Cairo': [30.0444, 31.2357],
     'Alexandria': [31.2001, 29.9187],
     'Port Said': [31.2653, 32.3019],
+    'Cairo': [30.0444, 31.2357],
   };
 
   final Map<String, int> branchIds = {
-    'Cairo': 3,
     'Alexandria': 1,
     'Port Said': 2,
+    'Cairo': 3,
   };
 
   @override

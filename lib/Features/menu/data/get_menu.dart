@@ -13,9 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class GetMenu {
   final Map<String, List<double>> branches = {
-    'Cairo': [30.0444, 31.2357],
     'Alexandria': [31.2001, 29.9187],
     'Port Said': [31.2653, 32.3019],
+    'Cairo': [30.0444, 31.2357],
   };
 
   Future<List<MenuItem>> getMenu() async {
@@ -41,6 +41,41 @@ class GetMenu {
     try {
       debugPrint('Fetching menu from server...');
       int branchId = await getBranchIdBasedOnLocation();
+
+      if (branchId == 0) {
+        throw Exception('Invalid branch ID');
+      }
+
+      final response = await http.get(
+        Uri.parse('http://$baseUrl:4000/admin/menu/branchMenuFilter/$branchId'),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to retrieve data');
+      }
+
+      var jsonResponse = jsonDecode(response.body);
+      debugPrint('Response received: $jsonResponse');
+
+      if (jsonResponse['status'] != 'success') {
+        throw Exception('Failed to retrieve data');
+      }
+
+      List<dynamic> itemData = jsonResponse['data'];
+      List<MenuItem> menuItems =
+          itemData.map((data) => MenuItem.fromJson(data)).toList();
+
+      debugPrint('Menu items: $menuItems');
+      return menuItems;
+    } catch (e) {
+      debugPrint('Error fetching menu from server: $e');
+      throw Exception('Failed to retrieve data');
+    }
+  }
+
+  Future<List<MenuItem>> getMenuByBranch(int branchId) async {
+    try {
+      debugPrint('Fetching menu from server...');
 
       if (branchId == 0) {
         throw Exception('Invalid branch ID');

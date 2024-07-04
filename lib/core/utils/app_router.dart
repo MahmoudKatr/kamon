@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kamon/Features/Splash/presentation/views/splash_view.dart';
 import 'package:kamon/Features/app_layout/screens/app_layout_screen.dart';
 import 'package:kamon/Features/auth/UI/login_screen.dart';
+import 'package:kamon/Features/home/presentation/views/widgets/branch_menu_screen.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
 import 'package:kamon/Features/menu/presentation/item_screen.dart';
 import 'package:kamon/Features/ordars/cart_screen.dart';
@@ -52,6 +53,19 @@ abstract class AppRouter {
         builder: (context, state) => Consumer<CartProvider>(
           builder: (context, cart, child) => CartScreen(cart: cart),
         ),
+      ),
+      GoRoute(
+        path: '/branchMenu',
+        builder: (context, state) {
+          final extraData = state.extra as List;
+          final branchId = extraData[0] as int;
+          final branchName = extraData[1] as String;
+
+          return BranchMenuScreen(
+            branchId: branchId,
+            branchName: branchName,
+          );
+        },
       ),
     ],
   );
