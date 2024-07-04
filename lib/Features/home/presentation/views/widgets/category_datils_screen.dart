@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
+import 'package:svg_flutter/svg.dart';
 
 import '../../../../menu/data/get_menu.dart';
 
@@ -154,14 +155,24 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
     _menuItemsFuture = GetMenu().getMenu();
   }
 
+  static final Map<String, List<double>> branches = {
+    'Cairo': [30.0444, 31.2357],
+    'Alexandria': [31.2001, 29.9187],
+    'Port Said': [31.2653, 32.3019],
+  };
+
+  Future<List<String>> fetchBranches() async {
+    // Here, we are returning the branch names directly from the static map
+    return branches.keys.toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           ClipPath(
-            clipper:
-                BaseClipper(), // Ensures the top part is clipped   ' ${widget.categoryName}'
+            clipper: BaseClipper(), // Ensures the top part is clipped
             child: Container(
               color: kPrimaryColor, // Background color for visual clarity
               height: 130, // Fixed height for the clipped area
@@ -193,7 +204,59 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                       .toList();
 
                   if (items.isEmpty) {
-                    return const Center(child: Text("No items found"));
+                    return FutureBuilder<List<String>>(
+                      future: fetchBranches(),
+                      builder: (context, branchSnapshot) {
+                        if (branchSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (branchSnapshot.hasError) {
+                          return Center(
+                              child: Text(
+                                  'Error fetching branches: ${branchSnapshot.error}'));
+                        } else if (!branchSnapshot.hasData ||
+                            branchSnapshot.data!.isEmpty) {
+                          return const Center(
+                              child: Text('Sorry, no branches available.'));
+                        } else {
+                          List<String> branches = branchSnapshot.data!;
+                          return Center(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 35),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/images/sad.svg',
+                                    width: 80,
+                                    height: 80,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const Text(
+                                    "Sorry, you're now out of our delivery area. But you can see the menus for each branch:",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ...branches.map((branch) {
+                                    return ElevatedButton(
+                                      onPressed: () {
+                                        // Implement navigation to the branch menu screen
+                                        GoRouter.of(context)
+                                            .push('/branchMenu', extra: branch);
+                                      },
+                                      child: Text(branch),
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    );
                   }
                   return GridView.builder(
                     padding: const EdgeInsets.all(10),
