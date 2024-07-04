@@ -15,10 +15,10 @@ class SocialMediaScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screens = <Widget>[
-      AddRequestFriend(),
-      FriendsListPage(),
-      FriendRequestsPage(),
-      FavoriteItemsScreen(),
+      const AddRequestFriend(),
+      const FriendsListPage(),
+      const FriendRequestsPage(),
+      const FavoriteItemsScreen(),
     ];
 
     return BlocProvider(
@@ -44,7 +44,8 @@ class SocialMediaScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   margin: const EdgeInsets.all(10),
                   child: Row(
                     children: [

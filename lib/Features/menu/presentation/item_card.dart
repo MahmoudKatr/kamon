@@ -1,19 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:kamon/Features/menu/data/get_menu.dart';
-import 'package:kamon/Features/menu/presentation/recommendation_wedgit.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:kamon/Features/ordars/non_virtual_order/data/post_non_virual.dart';
-import 'package:kamon/Features/ordars/non_virtual_order/model/non_virual_model.dart';
-import 'package:kamon/Features/ordars/data/cart_provider.dart';
-import 'package:kamon/Features/menu/model/menu_model.dart';
-import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:kamon/Features/menu/data/get_menu.dart';
+import 'package:kamon/Features/menu/model/menu_model.dart';
+import 'package:kamon/Features/menu/presentation/recommendation_wedgit.dart';
+import 'package:kamon/Features/ordars/data/cart_provider.dart';
+import 'package:kamon/Features/ordars/non_virtual_order/data/post_non_virual.dart';
+import 'package:kamon/Features/ordars/non_virtual_order/model/non_virual_model.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/utils/app_router.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ItemDetailCard extends StatefulWidget {
   final String mealTime;
@@ -30,7 +33,7 @@ class ItemDetailCard extends StatefulWidget {
   final MenuItem menuItem;
 
   const ItemDetailCard({
-    Key? key,
+    super.key,
     required this.mealTime,
     required this.itemName,
     required this.rating,
@@ -43,9 +46,10 @@ class ItemDetailCard extends StatefulWidget {
     required this.itemStatus,
     required this.preparationTime,
     required this.menuItem,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _ItemDetailCardState createState() => _ItemDetailCardState();
 }
 
@@ -91,15 +95,15 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        print(
-            'Raw JSON response: $jsonResponse'); // Print raw JSON response for debugging
+        debugPrint(
+            'Raw JSON response: $jsonResponse'); // debugPrint raw JSON response for debugging
 
         Map<String, dynamic> recommendations =
             Map<String, dynamic>.from(jsonResponse);
 
         List<int> itemIds =
             recommendations.keys.map((id) => int.parse(id)).toList();
-        print('Item IDs: $itemIds'); // Debug print for item IDs
+        debugPrint('Item IDs: $itemIds'); // Debug debugPrint for item IDs
 
         List<MenuItem> items = [];
         GetMenu getMenu = GetMenu();
@@ -108,7 +112,7 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
           try {
             MenuItem? menuItem = localMenuItems
                 .firstWhere((item) => item.itemId == id, orElse: () {
-              print('No matching local menu item found for ID: $id');
+              debugPrint('No matching local menu item found for ID: $id');
               return MenuItem(
                   itemId: id,
                   itemName: 'Unknown Item',
@@ -125,10 +129,10 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
                   ratersNumber: 0);
             });
             items.add(menuItem);
-            print(
+            debugPrint(
                 'Item Name for ID $id: ${menuItem.itemName}, Price: ${menuItem.price}');
           } catch (e) {
-            print('Error fetching local menu item for ID $id: $e');
+            debugPrint('Error fetching local menu item for ID $id: $e');
           }
         }
 
@@ -137,14 +141,14 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
         });
 
         await getMenu.saveRecommendedItemsLocally(itemId, items);
-        print(
-            'Recommended items: $recommendedItems'); // Debug print for recommended items
+        debugPrint(
+            'Recommended items: $recommendedItems'); // Debug debugPrint for recommended items
       } else {
-        print(
+        debugPrint(
             'Failed to fetch recommendations. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching recommended items: $e');
+      debugPrint('Error fetching recommended items: $e');
     }
   }
 
@@ -157,7 +161,7 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
         recommendedItems = localRecommendedItems;
       });
     } catch (e) {
-      print('Error fetching local recommended items: $e');
+      debugPrint('Error fetching local recommended items: $e');
     }
   }
 
@@ -227,7 +231,7 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
-                child: Container(
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.6,
                   child: Text(
                     widget.itemName,
@@ -428,11 +432,11 @@ class CircularIconButton extends StatelessWidget {
   final Color color;
 
   const CircularIconButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.onPressed,
     this.color = const Color.fromARGB(102, 36, 10, 51),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

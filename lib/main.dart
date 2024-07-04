@@ -5,7 +5,7 @@ import 'package:kamon/core/utils/app_router.dart';
 import 'package:kamon/constant.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kamon/Features/auth/auth_login/login_cubit.dart'; 
+import 'package:kamon/Features/auth/auth_login/login_cubit.dart';
 
 void main() {
   runApp(

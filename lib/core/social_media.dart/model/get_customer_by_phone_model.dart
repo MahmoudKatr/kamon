@@ -7,7 +7,10 @@ class Account {
   final String firstName;
   final String lastName;
 
-  Account({required this.accountId, required this.firstName, required this.lastName});
+  Account(
+      {required this.accountId,
+      required this.firstName,
+      required this.lastName});
 
   factory Account.fromJson(Map<String, dynamic> json) {
     return Account(
@@ -19,7 +22,8 @@ class Account {
 }
 
 Future<List<Account>> fetchAccountByPhone(String phone) async {
-  final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/social/getAccountByPhone/$phone'));
+  final response = await http.get(
+      Uri.parse('http://$baseUrl:4000/admin/social/getAccountByPhone/$phone'));
 
   if (response.statusCode == 200) {
     final jsonResponse = json.decode(response.body);

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kamon/Features/menu/model/category_model.dart';
 import 'package:kamon/constant.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CategoryListView extends StatefulWidget {
-  const CategoryListView({Key? key}) : super(key: key);
+  const CategoryListView({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CategoryListViewState createState() => _CategoryListViewState();
 }
 
@@ -75,7 +75,7 @@ class _CategoryListViewState extends State<CategoryListView> {
         const SizedBox(height: 8.0),
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,
             color: Colors.black,

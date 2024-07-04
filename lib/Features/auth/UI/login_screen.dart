@@ -15,6 +15,7 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.branchLocation});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -232,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-    ),
-);
-}
+      ),
+    );
+  }
 }

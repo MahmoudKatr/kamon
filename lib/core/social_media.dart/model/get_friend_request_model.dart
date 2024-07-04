@@ -8,7 +8,8 @@ class FriendRequest {
   final String custName;
   final DateTime requestDate;
 
-  FriendRequest({required this.id, required this.custName, required this.requestDate});
+  FriendRequest(
+      {required this.id, required this.custName, required this.requestDate});
 
   factory FriendRequest.fromJson(Map<String, dynamic> json) {
     return FriendRequest(
@@ -21,8 +22,8 @@ class FriendRequest {
 
 Future<List<FriendRequest>> fetchFriendRequests() async {
   // Initialize secure storage
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-  
+  const FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
   // Retrieve the account_id from secure storage
   String? accountId = await secureStorage.read(key: 'account_id');
 
@@ -32,7 +33,8 @@ Future<List<FriendRequest>> fetchFriendRequests() async {
   }
 
   // Construct the URL with the retrieved account_id
-  final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/social/friend-requests/$accountId'));
+  final response = await http.get(Uri.parse(
+      'http://$baseUrl:4000/admin/social/friend-requests/$accountId'));
 
   if (response.statusCode == 200) {
     final List<dynamic> data = json.decode(response.body)['data']['requests'];

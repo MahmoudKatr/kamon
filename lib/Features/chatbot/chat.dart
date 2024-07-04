@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kamon/Features/chatbot/chat_buble.dart';
 import 'package:kamon/Features/chatbot/chatbot_clip.dart';
@@ -7,8 +8,9 @@ import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-
 class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
+
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
@@ -18,7 +20,7 @@ class _ChatPageState extends State<ChatPage> {
   List<String> chatInputHistory = []; // Store chat history
   String url = '';
   String input_message = '';
-  TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
   final _controller = ScrollController();
 
   final SpeechToText _speechToText = SpeechToText();
@@ -33,16 +35,15 @@ class _ChatPageState extends State<ChatPage> {
     initSpeech();
   }
 
-void initSpeech() async {
-  bool available = await _speechToText.initialize(
-    onError: (val) => print('onError: $val'),
-    onStatus: (val) => print('onStatus: $val'),
-  );
-  setState(() {
-    _speechEnabled = available;
-  });
-}
-
+  void initSpeech() async {
+    bool available = await _speechToText.initialize(
+      onError: (val) => debugPrint('onError: $val'),
+      onStatus: (val) => debugPrint('onStatus: $val'),
+    );
+    setState(() {
+      _speechEnabled = available;
+    });
+  }
 
   void _startListening() async {
     await _speechToText.listen(onResult: _onSpeechResult);
@@ -66,8 +67,7 @@ void initSpeech() async {
 
   void _sendMessage() async {
     input_message = _wordsSpoken;
-    url = 'https://final-chabot.onrender.com/predict?message=' +
-        input_message.toString();
+    url = 'https://final-chabot.onrender.com/predict?message=$input_message';
     if (input_message.isNotEmpty) {
       chatInputHistory.add(input_message.toString());
       _textEditingController.clear();
@@ -78,30 +78,29 @@ void initSpeech() async {
       setState(() {
         chatHistory.add(decoded['answer'][0]); // Use only the first element
       });
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.animateTo(
           _controller.position.maxScrollExtent,
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
           curve: Curves.easeInOut,
         );
       });
     } else {
-      print("Input message is empty");
+      debugPrint("Input message is empty");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Container(
         color: kBeigeColor,
         child: Column(
           children: [
-                ClipPath(
-                  clipper: BaseClipper(),
-                  child: const ChatbotClip(),
-                ),
+            ClipPath(
+              clipper: BaseClipper(),
+              child: const ChatbotClip(),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: chatHistory.length,
@@ -129,11 +128,10 @@ void initSpeech() async {
                         setState(() {
                           input_message = value;
                           url =
-                              'https://final-chabot.onrender.com/predict?message=' +
-                                  input_message.toString();
+                              'https://final-chabot.onrender.com/predict?message=$input_message';
                         });
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: "Send Message",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -142,7 +140,7 @@ void initSpeech() async {
                       ),
                     ),
                   ),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   ElevatedButton(
                     onPressed: () {
                       if (isListening) {
@@ -153,20 +151,21 @@ void initSpeech() async {
                       isListening = !isListening; // Toggle the listening state
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
+                      shape: const CircleBorder(),
                       backgroundColor: isListening
                           ? Colors.green
                           : Colors.red, // Change color based on listening state
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                     ),
                     child: Icon(
                       isListening
                           ? Icons.mic
-                          : Icons.mic_off, // Change icon based on listening state
+                          : Icons
+                              .mic_off, // Change icon based on listening state
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   ElevatedButton(
                     onPressed: () async {
                       if (input_message.isNotEmpty) {
@@ -176,26 +175,27 @@ void initSpeech() async {
                         final decoded = jsonDecode(data);
                         input_message = '';
                         setState(() {
-                          chatHistory.add(decoded['answer'][0]); // Use only the first element
+                          chatHistory.add(decoded['answer']
+                              [0]); // Use only the first element
                         });
                         // Scroll to the end of the list after updating chatHistory
-                        WidgetsBinding.instance!.addPostFrameCallback((_) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
                           _controller.animateTo(
                             _controller.position.maxScrollExtent,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             curve: Curves.easeInOut,
                           );
                         });
                       } else {
-                        print("Input message is empty");
+                        debugPrint("Input message is empty");
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: CircleBorder(),
+                      shape: const CircleBorder(),
                       backgroundColor: Colors.green,
-                      padding: EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(10.0),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Icon(

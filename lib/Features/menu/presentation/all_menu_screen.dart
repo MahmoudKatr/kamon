@@ -5,7 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:kamon/Features/home/data/seach_view_model.dart';
 
 class MenuScreen extends StatefulWidget {
+  const MenuScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _MenuScreenState createState() => _MenuScreenState();
 }
 

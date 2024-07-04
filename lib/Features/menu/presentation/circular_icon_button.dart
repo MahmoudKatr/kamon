@@ -8,14 +8,15 @@ class CircularIconButton extends StatefulWidget {
   final Color color;
 
   const CircularIconButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.itemId,
     this.color = const Color.fromARGB(102, 36, 10, 51),
     required Null Function() onPressed,
-  }) : super(key: key);
+  });
 
   @override
+  // ignore: library_private_types_in_public_api
   _CircularIconButtonState createState() => _CircularIconButtonState();
 }
 

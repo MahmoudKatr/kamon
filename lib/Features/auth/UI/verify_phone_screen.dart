@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,11 +14,13 @@ class VerifyPhoneScreen extends StatefulWidget {
   const VerifyPhoneScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _VerifyPhoneScreenState createState() => _VerifyPhoneScreenState();
 }
 
 class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
-  final TextEditingController _verificationCodeController = TextEditingController();
+  final TextEditingController _verificationCodeController =
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> _verifyCode() async {
@@ -32,7 +36,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         final customerData = responseBody['data']['information'][0];
-        
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -43,22 +47,24 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
         );
       } else if (response.statusCode == 500) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        if (responseBody['status'] == 'error' && responseBody['message'] == 'Phone not related to customer') {
+        if (responseBody['status'] == 'error' &&
+            responseBody['message'] == 'Phone not related to customer') {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Phone not related to customer, please sign up')),
+            const SnackBar(
+                content: Text('Phone not related to customer, please sign up')),
           );
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SignUpScreen()),
+            MaterialPageRoute(builder: (context) => const SignUpScreen()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Verification failed')),
+            const SnackBar(content: Text('Verification failed')),
           );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Verification failed')),
+          const SnackBar(content: Text('Verification failed')),
         );
       }
     }
@@ -211,7 +217,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
             ),
           ],
         ),
-    ),
-);
-}
+      ),
+    );
+  }
 }

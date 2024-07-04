@@ -6,7 +6,7 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  ServerFailure(String message) : super(message);
+  ServerFailure(super.message);
 
   factory ServerFailure.fromDioError(DioException dioError) {
     switch (dioError.type) {
@@ -17,13 +17,16 @@ class ServerFailure extends Failure {
       case DioExceptionType.receiveTimeout:
         return ServerFailure('Receive timeout with ApiServer');
       case DioExceptionType.badResponse:
-        return ServerFailure('Received invalid status code: ${dioError.response?.statusCode}');
+        return ServerFailure(
+            'Received invalid status code: ${dioError.response?.statusCode}');
       case DioExceptionType.cancel:
         return ServerFailure('Request to ApiServer was cancelled');
       case DioExceptionType.connectionError:
-        return ServerFailure('Connection to ApiServer failed due to internet connection');
+        return ServerFailure(
+            'Connection to ApiServer failed due to internet connection');
       case DioExceptionType.badCertificate:
-        return ServerFailure('Connection to ApiServer failed due to a bad certificate');
+        return ServerFailure(
+            'Connection to ApiServer failed due to a bad certificate');
       case DioExceptionType.unknown:
       default:
         return ServerFailure('Unknown error occurred: ${dioError.message}');
@@ -32,7 +35,10 @@ class ServerFailure extends Failure {
 
   // Factory method to create a ServerFailure instance from an HTTP response
   factory ServerFailure.fromResponse(int? statusCode, dynamic response) {
-    if (statusCode == 400 || statusCode == 401 || statusCode == 403 || statusCode == 422) {
+    if (statusCode == 400 ||
+        statusCode == 401 ||
+        statusCode == 403 ||
+        statusCode == 422) {
       return ServerFailure(response['message']);
     } else if (statusCode == 404) {
       return ServerFailure(response['error']);

@@ -10,8 +10,7 @@ import 'dart:convert';
 class RecommendedItems extends StatelessWidget {
   final List<MenuItem> recommendedItems;
 
-  const RecommendedItems({Key? key, required this.recommendedItems})
-      : super(key: key);
+  const RecommendedItems({super.key, required this.recommendedItems});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +41,7 @@ class RecommendedItems extends StatelessWidget {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Container(
+                    child: SizedBox(
                       width: 100, // Fixed width of each item
                       child: Stack(
                         alignment: Alignment.bottomRight,

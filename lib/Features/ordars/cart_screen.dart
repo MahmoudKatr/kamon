@@ -1,17 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kamon/Features/ordars/data/cart_provider.dart';
 import 'package:kamon/Features/ordars/non_virtual_order/data/post_non_virual.dart';
 import 'package:kamon/Features/ordars/non_virtual_order/model/non_virual_model.dart';
-import 'package:provider/provider.dart';
-import 'package:kamon/Features/ordars/data/cart_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatefulWidget {
   final CartProvider cart;
 
-  const CartScreen({Key? key, required this.cart}) : super(key: key);
+  const CartScreen({super.key, required this.cart});
 
   @override
   _CartScreenState createState() => _CartScreenState();
@@ -156,7 +157,7 @@ class _CartScreenState extends State<CartScreen> with TickerProviderStateMixin {
 
   Future<void> _placeOrder(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+    const FlutterSecureStorage secureStorage = FlutterSecureStorage();
     int? branchId = prefs.getInt('branchId');
     String? customerId = await secureStorage.read(key: 'customer_id');
 

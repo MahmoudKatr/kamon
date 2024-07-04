@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:kamon/core/network/api_pay.dart';
 
 class PaymobManager {
@@ -20,8 +21,8 @@ class PaymobManager {
       );
       return paymentKey;
     } catch (e) {
-      print("Exc==========================================");
-      print(e.toString());
+      debugPrint("Exc==========================================");
+      debugPrint(e.toString());
       throw Exception();
     }
   }

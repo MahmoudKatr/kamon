@@ -21,7 +21,7 @@ class _SplashViewbodyState extends State<SplashViewbody>
   late Animation<Offset> leftSlidingAnimation;
   late Animation<Offset> rightSlidingAnimation;
   final LocationService _locationService = LocationService();
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   String branchLocation = 'Unknown';
   int branchId = 0;
 

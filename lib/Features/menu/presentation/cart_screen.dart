@@ -1,14 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:kamon/Features/ordars/non_virtual_order/data/post_non_virual.dart';
 import 'package:kamon/Features/ordars/non_virtual_order/model/non_virual_model.dart';
-import 'package:provider/provider.dart';
 import 'package:kamon/Features/ordars/data/cart_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatelessWidget {
   final CartProvider cart;
 
-  const CartScreen({Key? key, required this.cart}) : super(key: key);
+  const CartScreen({super.key, required this.cart});
 
   Future<void> _placeOrder(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();

@@ -29,19 +29,23 @@ class Order {
 }
 
 class confirmedOrder extends StatefulWidget {
+  const confirmedOrder({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _confirmedOrderState createState() => _confirmedOrderState();
 }
 
 class _confirmedOrderState extends State<confirmedOrder> {
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<List<Order>> fetchOrders() async {
     // Retrieve customer_id from secure storage
     String? customerId = await secureStorage.read(key: 'customer_id');
     if (customerId == null) throw Exception("Customer ID not found");
 
-    final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/confirmed'));
+    final response = await http.get(Uri.parse(
+        'http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/confirmed'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -68,17 +72,18 @@ class _confirmedOrderState extends State<confirmedOrder> {
         future: fetchOrders(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No orders found confirmed'));
+            return const Center(child: Text('No orders found confirmed'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 final order = snapshot.data![index];
-                return OrderItemCard(order: order, capitalizeEachWord: capitalizeEachWord);
+                return OrderItemCard(
+                    order: order, capitalizeEachWord: capitalizeEachWord);
               },
             );
           }
@@ -92,7 +97,8 @@ class OrderItemCard extends StatelessWidget {
   final Order order;
   final String Function(String) capitalizeEachWord;
 
-  OrderItemCard({required this.order, required this.capitalizeEachWord});
+  const OrderItemCard(
+      {super.key, required this.order, required this.capitalizeEachWord});
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +115,7 @@ class OrderItemCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
@@ -126,7 +132,7 @@ class OrderItemCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +147,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kItemFontColor,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       formattedBranchName,
                       style: kSecondaryFont(
@@ -150,7 +156,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kPrimaryColor,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Total: ${order.orderTotalPrice} EGP',
                       style: kPrimaryFont(
@@ -159,7 +165,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kItemFontColor,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Payment: ${order.orderPaymentMethod}',
                       style: kPrimaryFont(

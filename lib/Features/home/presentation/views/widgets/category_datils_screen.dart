@@ -1,17 +1,19 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kamon/Features/home/presentation/views/widgets/category_cliper.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
+
 import '../../../../menu/data/get_menu.dart';
 
 class MenuItemCard extends StatelessWidget {
   final MenuItem item;
 
-  const MenuItemCard({Key? key, required this.item}) : super(key: key);
+  const MenuItemCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -137,10 +139,10 @@ class CategoryDetailScreen extends StatefulWidget {
   final String categoryName;
 
   const CategoryDetailScreen(
-      {Key? key, required this.categoryId, required this.categoryName})
-      : super(key: key);
+      {super.key, required this.categoryId, required this.categoryName});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CategoryDetailScreenState createState() => _CategoryDetailScreenState();
 }
 
@@ -190,6 +192,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                   final items = snapshot.data!
                       .where((item) => item.categoryId == widget.categoryId)
                       .toList();
+
+                  log(snapshot.data.toString());
                   if (items.isEmpty) {
                     return const Center(child: Text("No items found"));
                   }

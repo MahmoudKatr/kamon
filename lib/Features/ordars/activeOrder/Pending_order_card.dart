@@ -1,9 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:kamon/constant.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:kamon/constant.dart';
 
 // Model class for Order
 class Order {
@@ -30,12 +33,14 @@ class Order {
 }
 
 class PendingOrder extends StatefulWidget {
+  const PendingOrder({super.key});
+
   @override
   _PendingOrderState createState() => _PendingOrderState();
 }
 
 class _PendingOrderState extends State<PendingOrder> {
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   final ValueNotifier<List<Order>> _ordersNotifier = ValueNotifier([]);
   late Timer _timer;
 
@@ -53,7 +58,7 @@ class _PendingOrderState extends State<PendingOrder> {
 
   void _startPolling() {
     _fetchOrders(); // Initial fetch
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _fetchOrders();
     });
   }
@@ -69,7 +74,8 @@ class _PendingOrderState extends State<PendingOrder> {
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       final List orders = jsonResponse['data']['orders'];
-      _ordersNotifier.value = orders.map((order) => Order.fromJson(order)).toList();
+      _ordersNotifier.value =
+          orders.map((order) => Order.fromJson(order)).toList();
     } else {
       throw Exception('Failed to load orders');
     }
@@ -91,14 +97,16 @@ class _PendingOrderState extends State<PendingOrder> {
         valueListenable: _ordersNotifier,
         builder: (context, orders, child) {
           if (orders.isEmpty) {
-            return Center(child: Text('No orders found Pending'));
+            return const Center(child: Text('No orders found Pending'));
           } else {
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
                 return OrderItemCard(
-                    order: order, capitalizeEachWord: capitalizeEachWord, onCancel: _fetchOrders);
+                    order: order,
+                    capitalizeEachWord: capitalizeEachWord,
+                    onCancel: _fetchOrders);
               },
             );
           }
@@ -113,7 +121,11 @@ class OrderItemCard extends StatelessWidget {
   final String Function(String) capitalizeEachWord;
   final VoidCallback onCancel;
 
-  OrderItemCard({required this.order, required this.capitalizeEachWord, required this.onCancel});
+  const OrderItemCard(
+      {super.key,
+      required this.order,
+      required this.capitalizeEachWord,
+      required this.onCancel});
 
   Future<void> cancelOrder(int orderId) async {
     final response = await http.patch(
@@ -128,7 +140,7 @@ class OrderItemCard extends StatelessWidget {
     );
 
     if (response.statusCode == 201) {
-      print('Order cancelled successfully');
+      debugPrint('Order cancelled successfully');
       onCancel(); // Call the onCancel callback to refresh the orders list
     } else {
       throw Exception('Failed to cancel the order');
@@ -150,7 +162,7 @@ class OrderItemCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black26,
@@ -167,7 +179,7 @@ class OrderItemCard extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,7 +194,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kItemFontColor,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       formattedBranchName,
                       style: kSecondaryFont(
@@ -191,7 +203,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kPrimaryColor,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Total: ${order.orderTotalPrice} EGP',
                       style: kPrimaryFont(
@@ -200,7 +212,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kItemFontColor,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Payment: ${order.orderPaymentMethod}',
                       style: kPrimaryFont(
@@ -209,7 +221,7 @@ class OrderItemCard extends StatelessWidget {
                         color: kPrimaryColor,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red, // Background color
@@ -221,16 +233,18 @@ class OrderItemCard extends StatelessWidget {
                       onPressed: () async {
                         try {
                           await cancelOrder(order.orderId);
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
                             content: Text('Order cancelled successfully'),
                           ));
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
                             content: Text('Failed to cancel the order'),
                           ));
                         }
                       },
-                      child: Text(
+                      child: const Text(
                         'Cancel Order',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,

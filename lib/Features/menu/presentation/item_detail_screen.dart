@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
 import 'package:kamon/Features/menu/presentation/circular_image.dart';
+import 'package:kamon/Features/menu/presentation/item_card.dart';
 import 'package:kamon/Features/menu/presentation/item_screen_clip_path.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
-import 'package:kamon/Features/menu/presentation/item_card.dart';
-import 'dart:io';
 
 class ItemDetailScreen extends StatelessWidget {
   final MenuItem menuItem;
 
-  const ItemDetailScreen({Key? key, required this.menuItem}) : super(key: key);
+  const ItemDetailScreen({super.key, required this.menuItem});
 
   void addToFavorites() {
     // Logic to add to favorites
-    print("Added to favorites: ${menuItem.itemName}");
+    debugPrint("Added to favorites: ${menuItem.itemName}");
   }
 
   void handleBack() {

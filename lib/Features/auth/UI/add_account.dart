@@ -1,13 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'package:kamon/Features/app_layout/screens/app_layout_screen.dart';
 import 'package:kamon/Features/auth/UI/login_screen.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
+
 import '../../../constant.dart';
 
 class AddAccountScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class AddAccountScreen extends StatefulWidget {
   const AddAccountScreen({super.key, required this.customerData});
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddAccountScreenState createState() => _AddAccountScreenState();
 }
 
@@ -30,8 +33,8 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _locationCoordinatesController =
-      TextEditingController();
+  // final TextEditingController _locationCoordinatesController =
+  //     TextEditingController();
   final TextEditingController _birthDateController = TextEditingController();
   final TextEditingController _profileImgController = TextEditingController();
   XFile? _profileImage;
@@ -55,8 +58,8 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         _profileImage = image;
@@ -97,6 +100,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
 
         if (response.statusCode == 200) {
           Navigator.push(
+            // ignore: use_build_context_synchronously
             context,
             MaterialPageRoute(
                 builder: (context) => const AppLayoutScreen(
@@ -112,17 +116,19 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
               errorMessage = responseJson['error'];
             }
           } catch (e) {
-            print('Error parsing response: $e');
+            debugPrint('Error parsing response: $e');
           }
-          print('Error: ${response.statusCode} - ${response.body}');
+          debugPrint('Error: ${response.statusCode} - ${response.body}');
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorMessage)),
           );
         }
       } catch (e) {
-        print('Error making POST request: $e');
+        debugPrint('Error making POST request: $e');
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Signup failed. Please try again.')),
+          const SnackBar(content: Text('Signup failed. Please try again.')),
         );
       }
     }
@@ -197,7 +203,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                         width: 100,
                         height: 100,
                         decoration: BoxDecoration(
-                          color: Color(0xffDAE4E0),
+                          color: const Color(0xffDAE4E0),
                           borderRadius: BorderRadius.circular(50),
                           border: Border.all(
                             color: kPrimaryColor,
@@ -211,7 +217,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
                                   fit: BoxFit.cover,
                                 ),
                               )
-                            : Center(
+                            : const Center(
                                 child: Icon(
                                   Icons.camera_alt,
                                   size: 50,

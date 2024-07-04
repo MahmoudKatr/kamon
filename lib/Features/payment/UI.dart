@@ -3,7 +3,10 @@ import 'package:kamon/Features/payment/CustomCreditCardWidget.dart';
 import 'package:kamon/Features/payment/payment_methods_list_view.dart';
 
 class PaymentMethodScreen extends StatefulWidget {
+  const PaymentMethodScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _PaymentMethodScreenState createState() => _PaymentMethodScreenState();
 }
 
@@ -54,7 +57,7 @@ class _PaymentMethodScreenState extends State<PaymentMethodScreen> {
                     }
                     if (_selectedIndex == 0) {
                       // Cash selected
-                      print('Cash selected');
+                      debugPrint('Cash selected');
                     } else {
                       // Card selected
                     }

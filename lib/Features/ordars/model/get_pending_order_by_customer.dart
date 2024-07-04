@@ -27,18 +27,19 @@ class Order {
   }
 }
 
-final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+const FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
 Future<List<Order>> fetchOrders() async {
   try {
     // Read the customer ID from secure storage
     String? customerId = await secureStorage.read(key: 'customer_id');
-    
+
     if (customerId == null) {
       throw Exception('Customer ID not found');
     }
-    
-    final response = await Dio().get('http://localhost:4000/admin/customers/customerOrders/$customerId/10/pending');
+
+    final response = await Dio().get(
+        'http://localhost:4000/admin/customers/customerOrders/$customerId/10/pending');
 
     if (response.statusCode == 200) {
       final jsonResponse = response.data;
@@ -51,4 +52,3 @@ Future<List<Order>> fetchOrders() async {
     throw Exception('Failed to load orders: $e');
   }
 }
-

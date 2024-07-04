@@ -4,7 +4,8 @@ class PaymentMethodList extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
 
-  PaymentMethodList({
+  const PaymentMethodList({
+    super.key,
     required this.selectedIndex,
     required this.onItemTapped,
   });
@@ -13,7 +14,7 @@ class PaymentMethodList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         ListTile(
           leading: const Icon(Icons.money),

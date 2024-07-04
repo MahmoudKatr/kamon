@@ -46,8 +46,5 @@ class GeIntActiveEmployee {
   }
 }
 
-
-
-
 //http://ec2-13-37-245-245.eu-west-3.compute.amazonaws.com:4000/admin/employees/inactive-employees-list
 //http://ec2-13-37-245-245.eu-west-3.compute.amazonaws.com:4000/admin/employees/active-employees-list

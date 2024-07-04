@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kamon/constant.dart';
@@ -6,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class FriendRequestsPage extends StatefulWidget {
+  const FriendRequestsPage({super.key});
+
   @override
   _FriendRequestsPageState createState() => _FriendRequestsPageState();
 }
@@ -26,11 +30,11 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
         future: futureFriendRequests,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No friend requests'));
+            return const Center(child: Text('No friend requests'));
           } else {
             return ListView.builder(
               itemCount: snapshot.data!.length,
@@ -49,7 +53,7 @@ class _FriendRequestsPageState extends State<FriendRequestsPage> {
 class FriendRequestCard extends StatefulWidget {
   final FriendRequest request;
 
-  FriendRequestCard({required this.request});
+  const FriendRequestCard({super.key, required this.request});
 
   @override
   _FriendRequestCardState createState() => _FriendRequestCardState();
@@ -88,7 +92,7 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           child: Column(
@@ -98,27 +102,28 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
                 children: [
                   CircleAvatar(
                     backgroundColor: kPrimaryColor,
+                    radius: 30,
                     child: Text(
                       widget.request.custName[0],
-                      style: TextStyle(color: Colors.white, fontSize: 24),
+                      style: const TextStyle(color: Colors.white, fontSize: 24),
                     ),
-                    radius: 30,
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.request.custName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: Colors.black87,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
-                        DateFormat('yyyy-MM-dd HH:mm').format(widget.request.requestDate),
+                        DateFormat('yyyy-MM-dd HH:mm')
+                            .format(widget.request.requestDate),
                         style: TextStyle(
                           color: Colors.grey[600],
                           fontSize: 14,
@@ -130,17 +135,23 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
                 ],
               ),
               if (_isClicked) ...[
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
                       onPressed: () async {
                         try {
-                          await _updateFriendRequest(widget.request.id.toString(), 'accepted');
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend request accepted')));
+                          await _updateFriendRequest(
+                              widget.request.id.toString(), 'accepted');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Friend request accepted')));
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to accept friend request')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Failed to accept friend request')));
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -149,7 +160,7 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Confirm',
                         style: TextStyle(
                           color: Colors.white,
@@ -157,23 +168,29 @@ class _FriendRequestCardState extends State<FriendRequestCard> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () async {
                         try {
-                          await _updateFriendRequest(widget.request.id.toString(), 'rejected');
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Friend request rejected')));
+                          await _updateFriendRequest(
+                              widget.request.id.toString(), 'rejected');
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Friend request rejected')));
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to reject friend request')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Failed to reject friend request')));
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 116, 99, 99),
+                        backgroundColor: const Color.fromARGB(255, 116, 99, 99),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Delete',
                         style: TextStyle(
                           color: Colors.white,

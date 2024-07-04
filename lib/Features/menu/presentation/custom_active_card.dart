@@ -4,8 +4,7 @@ import 'package:kamon/Features/menu/model/active_emp_model.dart';
 class CustomActiveCard extends StatelessWidget {
   final ActiveEmployeesModel activeEmployee;
 
-  const CustomActiveCard({Key? key, required this.activeEmployee})
-      : super(key: key);
+  const CustomActiveCard({super.key, required this.activeEmployee});
 
   @override
   Widget build(BuildContext context) {

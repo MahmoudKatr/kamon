@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kamon/Features/menu/model/active_emp_model.dart';
+
 import '../../menu/Data/get_active_emp.dart';
 
 class ActiveEmployeeScreen extends StatefulWidget {
-  const ActiveEmployeeScreen({Key? key}) : super(key: key);
+  const ActiveEmployeeScreen({super.key});
 
   @override
   State<ActiveEmployeeScreen> createState() => _ActiveEmployeeScreenState();
@@ -99,7 +100,7 @@ class _ActiveEmployeeScreenState extends State<ActiveEmployeeScreen> {
       body: Container(
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             const Text(
               'Can\'t connect to the internet. Please check your connection',
               style: TextStyle(fontSize: 22),
@@ -115,7 +116,7 @@ class _ActiveEmployeeScreenState extends State<ActiveEmployeeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 29, 51, 71), // Updated color
+        backgroundColor: const Color.fromARGB(255, 29, 51, 71), // Updated color
         leading: _isSearching
             ? const BackButton(
                 color: Colors.white,
@@ -135,7 +136,7 @@ class _ActiveEmployeeScreenState extends State<ActiveEmployeeScreen> {
             allEmployees = snapshot.data!;
             return buildLoadedListWidgets(context);
           } else {
-            return Center(child: Text('No data available'));
+            return const Center(child: Text('No data available'));
           }
         },
       ),
@@ -163,7 +164,7 @@ class _ActiveEmployeeScreenState extends State<ActiveEmployeeScreen> {
 
   Widget buildEmployeesList() {
     if (searchedForEmployees.isEmpty) {
-      return Center(
+      return const Center(
         child: Text(
           'No results found.',
           style: TextStyle(fontSize: 18, color: Colors.grey),
@@ -172,7 +173,7 @@ class _ActiveEmployeeScreenState extends State<ActiveEmployeeScreen> {
     }
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       padding: EdgeInsets.zero,
       itemCount: searchedForEmployees.length,
       itemBuilder: (ctx, index) {

@@ -1,12 +1,16 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:kamon/Features/menu/model/menu_model.dart';
+import 'package:kamon/constant.dart';
+import 'package:kamon/core/utils/kamon_permissions.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:kamon/constant.dart';
-import 'package:kamon/Features/menu/model/menu_model.dart';
 
 class GetMenu {
   final Map<String, List<double>> branches = {
@@ -23,85 +27,96 @@ class GetMenu {
         return await getLocalMenuItems();
       }
     } catch (e) {
-      print('Error in getMenu: $e'); // Debug print
+      debugPrint('Error in getMenu: $e'); // Debug debugPrint
       return [];
     }
   }
 
   Future<bool> _hasInternetConnection() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await Connectivity().checkConnectivity();
     return connectivityResult != ConnectivityResult.none;
   }
 
   Future<List<MenuItem>> fetchMenuFromServer() async {
-    print('Fetching menu from server...');
-    int branchId = await _getBranchIdBasedOnLocation();
-    final response = await http.get(Uri.parse(
-        'http://$baseUrl:4000/admin/menu/branchMenuFilter/$branchId'));
+    try {
+      debugPrint('Fetching menu from server...');
+      int branchId = await _getBranchIdBasedOnLocation();
+      final response = await http.get(
+        Uri.parse('http://$baseUrl:4000/admin/menu/branchMenuFilter/$branchId'),
+      );
 
-    if (response.statusCode == 200) {
-      var jsonResponse = jsonDecode(response.body);
-      print('Response received: $jsonResponse');
+      log('Response received: ${response.body}');
 
-      if (jsonResponse['status'] == 'success') {
-        String lastUpdatedServer = jsonResponse['lastUpdated'] ?? '';
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String? lastUpdatedLocal = prefs.getString('lastUpdated');
-        print('Last updated on server: $lastUpdatedServer');
-        print('Last updated locally: $lastUpdatedLocal');
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        debugPrint('Response received: $jsonResponse');
 
-        // Handle empty lastUpdated values
-        if (lastUpdatedServer.isEmpty) {
-          print(
-              'Server did not provide a lastUpdated timestamp.'); // Debug print
-        }
-        if (lastUpdatedLocal == null) {
-          print(
-              'Local storage does not have a lastUpdated timestamp.'); // Debug print
-        }
+        if (jsonResponse['status'] == 'success') {
+          String lastUpdatedServer = jsonResponse['lastUpdated'] ?? '';
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String? lastUpdatedLocal = prefs.getString('lastUpdated');
+          debugPrint('Last updated on server: $lastUpdatedServer');
+          debugPrint('Last updated locally: $lastUpdatedLocal');
 
-        if (lastUpdatedLocal == null || lastUpdatedLocal != lastUpdatedServer) {
-          List<dynamic> itemData = jsonResponse['data'];
-          List<MenuItem> menuItems =
-              itemData.map((data) => MenuItem.fromJson(data)).toList();
+          if (lastUpdatedServer.isEmpty || lastUpdatedLocal == null) {
+            debugPrint('Missing lastUpdated timestamp. Fetching new data...');
+            List<dynamic> itemData = jsonResponse['data'];
+            List<MenuItem> menuItems =
+                itemData.map((data) => MenuItem.fromJson(data)).toList();
 
-          // Save menu items and images locally
-          await _saveMenuItemsLocally(menuItems);
-          await prefs.setString('lastUpdated', lastUpdatedServer);
+            await _saveMenuItemsLocally(menuItems);
+            await prefs.setString('lastUpdated', lastUpdatedServer);
 
-          print('Menu items: $menuItems');
-          return menuItems;
+            debugPrint('Menu items: $menuItems');
+            return menuItems;
+          } else if (lastUpdatedLocal != lastUpdatedServer) {
+            List<dynamic> itemData = jsonResponse['data'];
+            List<MenuItem> menuItems =
+                itemData.map((data) => MenuItem.fromJson(data)).toList();
+
+            await _saveMenuItemsLocally(menuItems);
+            await prefs.setString('lastUpdated', lastUpdatedServer);
+
+            debugPrint('Menu items: $menuItems');
+            return menuItems;
+          } else {
+            return await getLocalMenuItems();
+          }
         } else {
-          return await getLocalMenuItems();
+          throw Exception('Failed to load menu data');
         }
       } else {
-        throw Exception('Failed to load menu data');
+        throw Exception('Failed to retrieve data');
       }
-    } else {
-      throw Exception('Failed to retrieve data');
+    } catch (e) {
+      debugPrint('Error fetching menu from server: $e');
+      return [];
     }
   }
 
   Future<void> _saveMenuItemsLocally(List<MenuItem> menuItems) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> menuItemsJson =
-        menuItems.map((item) => jsonEncode(item.toJson())).toList();
-    await prefs.setStringList('menuItems', menuItemsJson);
-    print('Menu items saved locally: $menuItemsJson'); // Debug print
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      List<String> menuItemsJson =
+          menuItems.map((item) => jsonEncode(item.toJson())).toList();
+      await prefs.setStringList('menuItems', menuItemsJson);
+      debugPrint('Menu items saved locally: $menuItemsJson');
 
-    for (var item in menuItems) {
-      if (item.picturePath != null && item.picturePath!.isNotEmpty) {
-        String localPath = await _downloadAndSaveImage(item.picturePath!);
-        item.localPicturePath = localPath;
+      for (var item in menuItems) {
+        if (item.picturePath != null && item.picturePath!.isNotEmpty) {
+          String localPath = await _downloadAndSaveImage(item.picturePath!);
+          item.localPicturePath = localPath;
+        }
       }
-    }
 
-    // Save updated menu items with local image paths
-    List<String> updatedMenuItemsJson =
-        menuItems.map((item) => jsonEncode(item.toJson())).toList();
-    await prefs.setStringList('menuItems', updatedMenuItemsJson);
-    print(
-        'Updated menu items with local image paths: $updatedMenuItemsJson'); // Debug print
+      List<String> updatedMenuItemsJson =
+          menuItems.map((item) => jsonEncode(item.toJson())).toList();
+      await prefs.setStringList('menuItems', updatedMenuItemsJson);
+      debugPrint(
+          'Updated menu items with local image paths: $updatedMenuItemsJson');
+    } catch (e) {
+      debugPrint('Error saving menu items locally: $e');
+    }
   }
 
   Future<String> _downloadAndSaveImage(String url) async {
@@ -118,20 +133,25 @@ class GetMenu {
         return '';
       }
     } catch (e) {
-      print('Error downloading image from $url: $e'); // Debug print
+      debugPrint('Error downloading image from $url: $e');
       return '';
     }
   }
 
   Future<List<MenuItem>> getLocalMenuItems() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String>? menuItemsJson = prefs.getStringList('menuItems');
-    if (menuItemsJson != null) {
-      return menuItemsJson
-          .map((itemJson) => MenuItem.fromJson(jsonDecode(itemJson)))
-          .toList();
-    } else {
-      print('No local menu items found'); // Debug print
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      List<String>? menuItemsJson = prefs.getStringList('menuItems');
+      if (menuItemsJson != null) {
+        return menuItemsJson
+            .map((itemJson) => MenuItem.fromJson(jsonDecode(itemJson)))
+            .toList();
+      } else {
+        debugPrint('No local menu items found');
+        return [];
+      }
+    } catch (e) {
+      debugPrint('Error getting local menu items: $e');
       return [];
     }
   }
@@ -158,33 +178,38 @@ class GetMenu {
 
   Future<int> _getBranchIdBasedOnLocation() async {
     try {
+      await KamonPermissions.requestLocationPermission();
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
       double minDistance = double.infinity;
       String closestBranch = '';
       const double deliveryRadius = 10000.0; // 10 km in meters
 
-      branches.forEach((branch, coordinates) {
+      for (var entry in branches.entries) {
         double distance = Geolocator.distanceBetween(
           position.latitude,
           position.longitude,
-          coordinates[0],
-          coordinates[1],
+          entry.value[0],
+          entry.value[1],
         );
         if (distance < minDistance) {
           minDistance = distance;
-          closestBranch = branch;
+          closestBranch = entry.key;
         }
-      });
+      }
 
       if (minDistance <= deliveryRadius) {
-        return _getBranchId(closestBranch);
+        int branchId = _getBranchId(closestBranch);
+        debugPrint(
+            'Closest branch: $closestBranch with ID: $branchId at distance: $minDistance meters');
+        return branchId;
       } else {
-        print('Out of delivery area'); // Debug print
+        debugPrint(
+            'Out of delivery area. Closest branch: $closestBranch at distance: $minDistance meters');
         return 0; // Out of delivery area
       }
     } catch (e) {
-      print('Failed to determine location: $e'); // Debug print
+      debugPrint('Failed to determine location: $e'); // Debug debugPrint
       return 0; // Failed to determine location
     }
   }

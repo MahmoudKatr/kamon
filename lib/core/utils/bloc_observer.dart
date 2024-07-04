@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// A [BlocObserver] subclass that observes various events and state changes
 /// within the bloc lifecycle.
 ///
-/// This observer will print out useful debug information to the console
+/// This observer will debugPrint out useful debug information to the console
 /// for each lifecycle event of all BLoCs in the app.
 class AppBlocObserver extends BlocObserver {
   /// Called when a new instance of a bloc is created.

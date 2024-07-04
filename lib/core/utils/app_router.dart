@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:go_router/go_router.dart';
 import 'package:kamon/Features/Splash/presentation/views/splash_view.dart';
 import 'package:kamon/Features/app_layout/screens/app_layout_screen.dart';
@@ -19,7 +20,7 @@ abstract class AppRouter {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => SplashView(),
+        builder: (context, state) => const SplashView(),
       ),
       GoRoute(
         path: KHomeView,

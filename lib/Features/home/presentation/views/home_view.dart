@@ -19,11 +19,12 @@ class HomeView extends StatefulWidget {
       {super.key, required this.branchLocation, required this.branchId});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   List<Map<String, String>> bestSellers = [];
   List<Map<String, String>> recommendations = [];
   bool isLoading = true;
@@ -122,14 +123,14 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     Expanded(
                       child: isLoading
-                          ? Center(child: CircularProgressIndicator())
+                          ? const Center(child: CircularProgressIndicator())
                           : SingleChildScrollView(
                               child: Padding(
-                                padding: EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'All Categories',
                                       style: TextStyle(
                                         fontSize: 24,
@@ -137,10 +138,10 @@ class _HomeViewState extends State<HomeView> {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(height: 16.0),
-                                    CategoryListView(),
-                                    SizedBox(height: 24.0),
-                                    Row(
+                                    const SizedBox(height: 16.0),
+                                    const CategoryListView(),
+                                    const SizedBox(height: 24.0),
+                                    const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -153,11 +154,11 @@ class _HomeViewState extends State<HomeView> {
                                             ),
                                           ),
                                         ]),
-                                    SizedBox(height: 16.0),
+                                    const SizedBox(height: 16.0),
                                     BestSellerListView(
                                         bestSellers: bestSellers),
-                                    SizedBox(height: 16.0),
-                                    Text(
+                                    const SizedBox(height: 16.0),
+                                    const Text(
                                       'Recommendation',
                                       style: TextStyle(
                                         fontSize: 20,
@@ -165,7 +166,7 @@ class _HomeViewState extends State<HomeView> {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(height: 16.0),
+                                    const SizedBox(height: 16.0),
                                     RecommendationListView(
                                         recommendations: recommendations),
                                   ],
@@ -189,8 +190,7 @@ class _HomeViewState extends State<HomeView> {
 class BestSellerListView extends StatelessWidget {
   final List<Map<String, String>> bestSellers;
 
-  const BestSellerListView({Key? key, required this.bestSellers})
-      : super(key: key);
+  const BestSellerListView({super.key, required this.bestSellers});
 
   @override
   Widget build(BuildContext context) {
@@ -214,8 +214,7 @@ class BestSellerListView extends StatelessWidget {
 class RecommendationListView extends StatelessWidget {
   final List<Map<String, String>> recommendations;
 
-  const RecommendationListView({Key? key, required this.recommendations})
-      : super(key: key);
+  const RecommendationListView({super.key, required this.recommendations});
 
   @override
   Widget build(BuildContext context) {

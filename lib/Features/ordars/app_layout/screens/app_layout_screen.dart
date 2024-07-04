@@ -15,10 +15,10 @@ class OrderLayoutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screens = <Widget>[
-      PendingOrder(),
-      confirmedOrder(),
-      CompleteOrderCard(),
-      CancelledOrder(),
+      const PendingOrder(),
+      const confirmedOrder(),
+      const CompleteOrderCard(),
+      const CancelledOrder(),
     ];
 
     return BlocProvider(
@@ -44,7 +44,8 @@ class OrderLayoutScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   margin: const EdgeInsets.all(10),
                   child: Row(
                     children: [

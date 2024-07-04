@@ -5,7 +5,7 @@ import 'package:kamon/Features/menu/presentation/item_detail_screen.dart';
 class ItemScreen extends StatelessWidget {
   final MenuItem menuItem;
 
-  const ItemScreen({Key? key, required this.menuItem}) : super(key: key);
+  const ItemScreen({super.key, required this.menuItem});
 
   @override
   Widget build(BuildContext context) {

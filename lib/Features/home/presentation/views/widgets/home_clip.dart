@@ -9,14 +9,15 @@ import 'package:kamon/constant.dart';
 class HomeClip extends StatefulWidget {
   final String branchLocation;
 
-  HomeClip({super.key, required this.branchLocation});
+  const HomeClip({super.key, required this.branchLocation});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeClipState createState() => _HomeClipState();
 }
 
 class _HomeClipState extends State<HomeClip> {
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
   String customerFirstName = '';
 
   @override
@@ -56,6 +57,7 @@ class _HomeClipState extends State<HomeClip> {
 
   Future<void> _logout(BuildContext context) async {
     await secureStorage.delete(key: 'token');
+    // ignore: use_build_context_synchronously
     GoRouter.of(context).push(AppRouter.KLoginScreen);
   }
 

@@ -5,7 +5,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kamon/constant.dart';
 
 class FriendsListPage extends StatefulWidget {
+  const FriendsListPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _FriendsListPageState createState() => _FriendsListPageState();
 }
 
@@ -32,8 +35,8 @@ class _FriendsListPageState extends State<FriendsListPage> {
   }
 
   Future<List<Friend>> fetchFriends(String accountId) async {
-    final response = await http
-        .get(Uri.parse('http://$baseUrl:4000/admin/social/friendsList/$accountId'));
+    final response = await http.get(
+        Uri.parse('http://$baseUrl:4000/admin/social/friendsList/$accountId'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -48,16 +51,16 @@ class _FriendsListPageState extends State<FriendsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: futureFriends == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : FutureBuilder<List<Friend>>(
               future: futureFriends,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No friends found'));
+                  return const Center(child: Text('No friends found'));
                 } else {
                   return ListView.builder(
                     itemCount: snapshot.data!.length,
@@ -90,7 +93,7 @@ class Friend {
 class FriendCard extends StatelessWidget {
   final String name;
 
-  FriendCard({required this.name});
+  const FriendCard({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -103,18 +106,18 @@ class FriendCard extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
+              backgroundColor: kPrimaryColor,
               child: Text(
                 name[0],
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
-              backgroundColor: kPrimaryColor,
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             Text(
               name,
-              style: TextStyle(fontSize: 18.0),
+              style: const TextStyle(fontSize: 18.0),
             ),
           ],
         ),
