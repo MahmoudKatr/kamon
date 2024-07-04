@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,15 +17,20 @@ class GetMenu {
 
   Future<List<MenuItem>> getMenu() async {
     try {
-      List<MenuItem> localMenuItems = await getLocalMenuItems();
-      if (localMenuItems.isNotEmpty) {
-        return localMenuItems;
-      } else {
+      if (await _hasInternetConnection()) {
         return await fetchMenuFromServer();
+      } else {
+        return await getLocalMenuItems();
       }
     } catch (e) {
+      print('Error in getMenu: $e'); // Debug print
       return [];
     }
+  }
+
+  Future<bool> _hasInternetConnection() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    return connectivityResult != ConnectivityResult.none;
   }
 
   Future<List<MenuItem>> fetchMenuFromServer() async {
@@ -43,6 +49,16 @@ class GetMenu {
         String? lastUpdatedLocal = prefs.getString('lastUpdated');
         print('Last updated on server: $lastUpdatedServer');
         print('Last updated locally: $lastUpdatedLocal');
+
+        // Handle empty lastUpdated values
+        if (lastUpdatedServer.isEmpty) {
+          print(
+              'Server did not provide a lastUpdated timestamp.'); // Debug print
+        }
+        if (lastUpdatedLocal == null) {
+          print(
+              'Local storage does not have a lastUpdated timestamp.'); // Debug print
+        }
 
         if (lastUpdatedLocal == null || lastUpdatedLocal != lastUpdatedServer) {
           List<dynamic> itemData = jsonResponse['data'];

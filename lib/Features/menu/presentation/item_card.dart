@@ -94,69 +94,51 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
         print(
             'Raw JSON response: $jsonResponse'); // Print raw JSON response for debugging
 
-        if (jsonResponse['status'] == 'success') {
-          List<dynamic> favoriteItems = jsonResponse['data']['favoriteItems'];
-          print(
-              'Favorite items: $favoriteItems'); // Debug print for favorite items
+        Map<String, dynamic> recommendations =
+            Map<String, dynamic>.from(jsonResponse);
 
-          List<int> itemIds = favoriteItems
-              .map((item) {
-                String? recommendation = item['get_item_recommendations'];
-                if (recommendation != null) {
-                  String idString =
-                      recommendation.split(',')[0].replaceAll('(', '');
-                  return int.parse(idString);
-                } else {
-                  return null;
-                }
-              })
-              .where((id) => id != null)
-              .cast<int>()
-              .toList();
+        List<int> itemIds =
+            recommendations.keys.map((id) => int.parse(id)).toList();
+        print('Item IDs: $itemIds'); // Debug print for item IDs
 
-          print('Item IDs: $itemIds'); // Debug print for item IDs
-
-          List<MenuItem> items = [];
-          GetMenu getMenu = GetMenu();
-          List<MenuItem> localMenuItems = await getMenu.getLocalMenuItems();
-          for (int id in itemIds) {
-            try {
-              MenuItem? menuItem = localMenuItems
-                  .firstWhere((item) => item.itemId == id, orElse: () {
-                print('No matching local menu item found for ID: $id');
-                return MenuItem(
-                    itemId: id,
-                    itemName: 'Unknown Item',
-                    categoryId: 0,
-                    itemDescription: 'No description available',
-                    preparationTime: PreparationTime(minutes: 0),
-                    picturePath: '',
-                    vegetarian: false,
-                    healthy: false,
-                    itemStatus: 'inactive',
-                    discount: '0',
-                    price: '0',
-                    averageRating: '0',
-                    ratersNumber: 0);
-              });
-              items.add(menuItem);
-              print(
-                  'Item Name for ID $id: ${menuItem.itemName}, Price: ${menuItem.price}');
-            } catch (e) {
-              print('Error fetching local menu item for ID $id: $e');
-            }
+        List<MenuItem> items = [];
+        GetMenu getMenu = GetMenu();
+        List<MenuItem> localMenuItems = await getMenu.getLocalMenuItems();
+        for (int id in itemIds) {
+          try {
+            MenuItem? menuItem = localMenuItems
+                .firstWhere((item) => item.itemId == id, orElse: () {
+              print('No matching local menu item found for ID: $id');
+              return MenuItem(
+                  itemId: id,
+                  itemName: 'Unknown Item',
+                  categoryId: 0,
+                  itemDescription: 'No description available',
+                  preparationTime: PreparationTime(minutes: 0),
+                  picturePath: '',
+                  vegetarian: false,
+                  healthy: false,
+                  itemStatus: 'inactive',
+                  discount: '0',
+                  price: '0',
+                  averageRating: '0',
+                  ratersNumber: 0);
+            });
+            items.add(menuItem);
+            print(
+                'Item Name for ID $id: ${menuItem.itemName}, Price: ${menuItem.price}');
+          } catch (e) {
+            print('Error fetching local menu item for ID $id: $e');
           }
-
-          setState(() {
-            recommendedItems = items;
-          });
-
-          await getMenu.saveRecommendedItemsLocally(itemId, items);
-          print(
-              'Recommended items: $recommendedItems'); // Debug print for recommended items
-        } else {
-          print('Failed to fetch recommendations: ${jsonResponse['message']}');
         }
+
+        setState(() {
+          recommendedItems = items;
+        });
+
+        await getMenu.saveRecommendedItemsLocally(itemId, items);
+        print(
+            'Recommended items: $recommendedItems'); // Debug print for recommended items
       } else {
         print(
             'Failed to fetch recommendations. Status code: ${response.statusCode}');
@@ -404,11 +386,11 @@ class _ItemDetailCardState extends State<ItemDetailCard> {
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.green,
+                    backgroundColor: kPrimaryColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
+                      borderRadius: BorderRadius.circular(13),
                     ),
                   ),
                   child: const Text('Add to Cart'),

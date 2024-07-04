@@ -4,7 +4,6 @@ import 'package:kamon/Features/home/presentation/views/widgets/category_datils_s
 import 'package:kamon/constant.dart';
 import 'dart:convert';
 
-
 class CategoryListView extends StatefulWidget {
   const CategoryListView({Key? key}) : super(key: key);
 
@@ -59,16 +58,16 @@ class _CategoryListViewState extends State<CategoryListView> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CategoryDetailScreen(
-                      categoryId: category['categoryId'],
-                      categoryName: category['categoryName']),
+                    categoryId: category['categoryId'],
+                    categoryName: category['categoryName'],
+                  ),
                 ),
               );
             },
             child: _buildCategoryItem(
-              category['categoryName'],
-              category['picturePath'] ?? 
-              "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-            ),
+                category['categoryName'],
+                category['picturePath'] ??
+                    "https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
           );
         },
       ),

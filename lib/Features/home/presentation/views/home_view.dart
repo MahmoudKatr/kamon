@@ -14,7 +14,8 @@ class HomeView extends StatefulWidget {
   final String branchLocation;
   final int branchId;
 
-  const HomeView({super.key, required this.branchLocation, required this.branchId});
+  const HomeView(
+      {super.key, required this.branchLocation, required this.branchId});
 
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -31,21 +32,21 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> fetchBestSellers() async {
-    final response = await http.get(Uri.parse('http://$baseUrl:4000/admin/branch/bestSeller?branchId=${widget.branchId}&startDate=2024-01-01&endDate=2024-12-31'));
+    final response = await http.get(Uri.parse(
+        'http://$baseUrl:4000/admin/branch/bestSeller?branchId=${widget.branchId}&startDate=2024-01-01&endDate=2024-12-31'));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-setState(() {
-  bestSellers = (data['data'] as List).map<Map<String, String>>((item) {
-    return {
-      'imageUrl': item['fn_item_picture_path']?.toString() ?? testImage,
-      'price': item['fn_item_price'].toString(),
-      'name': item['fn_item_name'].toString(),
-    };
-  }).toList();
-  isLoading = false;
-});
-
+      setState(() {
+        bestSellers = (data['data'] as List).map<Map<String, String>>((item) {
+          return {
+            'imageUrl': item['fn_item_picture_path']?.toString() ?? testImage,
+            'price': item['fn_item_price'].toString(),
+            'name': item['fn_item_name'].toString(),
+          };
+        }).toList();
+        isLoading = false;
+      });
     } else {
       throw Exception('Failed to load best sellers');
     }
@@ -69,14 +70,14 @@ setState(() {
                     ),
                     Expanded(
                       child: isLoading
-                          ? Center(child: CircularProgressIndicator())
+                          ? const Center(child: CircularProgressIndicator())
                           : SingleChildScrollView(
                               child: Padding(
-                                padding: EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'All Categories',
                                       style: TextStyle(
                                         fontSize: 24,
@@ -84,10 +85,10 @@ setState(() {
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(height: 16.0),
-                                    CategoryListView(),
-                                    SizedBox(height: 24.0),
-                                    Row(
+                                    const SizedBox(height: 16.0),
+                                    const CategoryListView(),
+                                    const SizedBox(height: 24.0),
+                                    const Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -99,17 +100,10 @@ setState(() {
                                               color: Colors.black,
                                             ),
                                           ),
-                                          Text(
-                                            'View All',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.green,
-                                            ),
-                                          ),
                                         ]),
-                                    SizedBox(height: 16.0),
-                                    BestSellerListView(bestSellers: bestSellers),
+                                    const SizedBox(height: 16.0),
+                                    BestSellerListView(
+                                        bestSellers: bestSellers),
                                   ],
                                 ),
                               ),
@@ -131,7 +125,8 @@ setState(() {
 class BestSellerListView extends StatelessWidget {
   final List<Map<String, String>> bestSellers;
 
-  const BestSellerListView({Key? key, required this.bestSellers}) : super(key: key);
+  const BestSellerListView({Key? key, required this.bestSellers})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -151,4 +146,3 @@ class BestSellerListView extends StatelessWidget {
     );
   }
 }
-
