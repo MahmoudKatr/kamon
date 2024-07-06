@@ -44,8 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocListener<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            // Navigate to the homepage
-            GoRouter.of(context).push(AppRouter.kHomeView);
+            // Replace the current route with the home page route
+            GoRouter.of(context).replace(AppRouter.kHomeView);
           } else if (state is LoginFailure) {
             // Show an error message
             ScaffoldMessenger.of(context).showSnackBar(
