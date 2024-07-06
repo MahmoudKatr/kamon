@@ -340,7 +340,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       controller: _passwordController,
                       obscureText: _obscureText,
                       decoration: InputDecoration(
-                        hintText: '',
+                        hintText: '********',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),

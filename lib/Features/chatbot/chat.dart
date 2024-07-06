@@ -19,16 +19,14 @@ class _ChatPageState extends State<ChatPage> {
   List<String> chatHistory = []; // Store chat history
   List<String> chatInputHistory = []; // Store chat history
   String url = '';
-  String inputMessage = '';
+  String input_message = '';
   final TextEditingController _textEditingController = TextEditingController();
   final _controller = ScrollController();
 
   final SpeechToText _speechToText = SpeechToText();
   bool isListening = false; // Variable to track the listening state
-  // ignore: unused_field
   bool _speechEnabled = false;
   String _wordsSpoken = "";
-  // ignore: unused_field
   double _confidenceLevel = 0;
 
   @override
@@ -51,13 +49,16 @@ class _ChatPageState extends State<ChatPage> {
     await _speechToText.listen(onResult: _onSpeechResult);
     setState(() {
       _confidenceLevel = 0;
+      isListening = true; // Ensure the state is updated to show listening
     });
   }
 
   void _stopListening() async {
-    _sendMessage();
     await _speechToText.stop();
-    setState(() {});
+    setState(() {
+      isListening = false; // Ensure the state is updated to stop listening
+    });
+    _sendMessage();
   }
 
   void _onSpeechResult(result) {
@@ -68,14 +69,16 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _sendMessage() async {
-    inputMessage = _wordsSpoken;
-    url = 'https://final-chabot.onrender.com/predict?message=$inputMessage';
-    if (inputMessage.isNotEmpty) {
-      chatInputHistory.add(inputMessage.toString());
+    if (input_message.isEmpty) {
+      input_message = _wordsSpoken;
+    }
+    url = 'https://final-chabot.onrender.com/predict?message=$input_message';
+    if (input_message.isNotEmpty) {
+      chatInputHistory.add(input_message.toString());
       _textEditingController.clear();
       final data = await fetchData(url);
       final decoded = jsonDecode(data);
-      inputMessage = '';
+      input_message = '';
       _wordsSpoken = '';
       setState(() {
         chatHistory.add(decoded['answer'][0]); // Use only the first element
@@ -121,93 +124,70 @@ class _ChatPageState extends State<ChatPage> {
             ),
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _textEditingController,
-                      onChanged: (value) {
-                        setState(() {
-                          inputMessage = value;
-                          url =
-                              'https://final-chabot.onrender.com/predict?message=$inputMessage';
-                        });
-                      },
-                      decoration: const InputDecoration(
-                        hintText: "Send Message",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          borderSide: BorderSide(color: kPrimaryColor),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _textEditingController,
+                          onChanged: (value) {
+                            setState(() {
+                              input_message = value;
+                              url =
+                                  'https://final-chabot.onrender.com/predict?message=$input_message';
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            hintText: "Send Message",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(16)),
+                              borderSide: BorderSide(color: kPrimaryColor),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (isListening) {
-                        _stopListening();
-                      } else {
-                        _startListening();
-                      }
-                      isListening = !isListening; // Toggle the listening state
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: isListening
-                          ? Colors.green
-                          : Colors.red, // Change color based on listening state
-                      padding: const EdgeInsets.all(16.0),
-                    ),
-                    child: Icon(
-                      isListening
-                          ? Icons.mic
-                          : Icons
-                              .mic_off, // Change icon based on listening state
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (inputMessage.isNotEmpty) {
-                        chatInputHistory.add(inputMessage.toString());
-                        _textEditingController.clear();
-                        final data = await fetchData(url);
-                        final decoded = jsonDecode(data);
-                        inputMessage = '';
-                        setState(() {
-                          chatHistory.add(decoded['answer']
-                              [0]); // Use only the first element
-                        });
-                        // Scroll to the end of the list after updating chatHistory
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          _controller.animateTo(
-                            _controller.position.maxScrollExtent,
-                            duration: const Duration(seconds: 1),
-                            curve: Curves.easeInOut,
-                          );
-                        });
-                      } else {
-                        debugPrint("Input message is empty");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      backgroundColor: Colors.green,
-                      padding: const EdgeInsets.all(10.0),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Icon(
-                          Icons.play_arrow,
+                      const SizedBox(width: 5),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (isListening) {
+                            _stopListening();
+                          } else {
+                            _startListening();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: isListening
+                              ? Colors.green
+                              : Colors.red, // Change color based on listening state
+                          padding: const EdgeInsets.all(16.0),
+                        ),
+                        child: Icon(
+                          isListening
+                              ? Icons.mic
+                              : Icons
+                                  .mic_off, // Change icon based on listening state
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      ElevatedButton(
+                        onPressed: _sendMessage,
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.all(10.0),
+                        ),
+                        child: const Icon(
+                          Icons.send,
                           color: Colors.white,
                           size: 35,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                  const SizedBox(height: 10), // Add padding below the buttons
                 ],
               ),
             ),
