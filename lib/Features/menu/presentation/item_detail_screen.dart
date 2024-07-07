@@ -6,27 +6,43 @@ import 'package:kamon/Features/menu/presentation/item_screen_clip_path.dart';
 import 'package:kamon/constant.dart';
 import 'package:kamon/core/shared_widget/base_clip_path.dart';
 
-class ItemDetailScreen extends StatelessWidget {
+class ItemDetailScreen extends StatefulWidget {
   final MenuItem menuItem;
 
   const ItemDetailScreen({super.key, required this.menuItem});
 
+  @override
+  _ItemDetailScreenState createState() => _ItemDetailScreenState();
+}
+
+class _ItemDetailScreenState extends State<ItemDetailScreen> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the favorite state here if needed
+  }
+
   void addToFavorites() {
-    // Logic to add to favorites
-    debugPrint("Added to favorites: ${menuItem.itemName}");
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+    debugPrint("Added to favorites: ${widget.menuItem.itemName}");
   }
 
   void handleBack() {
-    // Logic to handle back navigation
+    Navigator.of(context).pop();
   }
 
   void handleCart() {
     // Logic to handle cart
+    debugPrint("Go to cart");
   }
 
   @override
   Widget build(BuildContext context) {
-    final double price = double.tryParse(menuItem.price) ?? 0.0;
+    final double price = double.tryParse(widget.menuItem.price) ?? 0.0;
 
     return Scaffold(
       body: Stack(
@@ -34,8 +50,7 @@ class ItemDetailScreen extends StatelessWidget {
           ClipPath(
             clipper: BaseClipper(),
             child: ItemScreenClipPath(
-              menuItem: menuItem,
-              onFavoriteTap: addToFavorites,
+              menuItem: widget.menuItem,
               onBackTap: handleBack,
               onCartTap: handleCart,
             ),
@@ -47,9 +62,9 @@ class ItemDetailScreen extends StatelessWidget {
                 child: Stack(
                   children: [
                     CircularImageWithShadow(
-                      imageUrl: menuItem.picturePath != null &&
-                              menuItem.picturePath!.isNotEmpty
-                          ? menuItem.picturePath!
+                      imageUrl: widget.menuItem.picturePath != null &&
+                              widget.menuItem.picturePath!.isNotEmpty
+                          ? widget.menuItem.picturePath!
                           : testImage, // Use a default image if picturePath is null or empty
                       size: 150.0,
                     ),
@@ -57,10 +72,10 @@ class ItemDetailScreen extends StatelessWidget {
                       bottom: 0,
                       right: 0,
                       child: Icon(
-                        menuItem.itemStatus == 'active'
+                        widget.menuItem.itemStatus == 'active'
                             ? Icons.check_circle
                             : Icons.warning,
-                        color: menuItem.itemStatus == 'active'
+                        color: widget.menuItem.itemStatus == 'active'
                             ? Colors.green
                             : Colors.red,
                         size: 30,
@@ -72,23 +87,22 @@ class ItemDetailScreen extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 0.0, right: 16, left: 16),
+                    padding: const EdgeInsets.only(top: 0.0, right: 16, left: 16),
                     child: Column(
                       children: [
                         ItemDetailCard(
-                          mealTime: menuItem.categoryId.toString(),
-                          itemName: menuItem.itemName,
-                          rating: double.parse(menuItem.averageRating),
-                          reviewsCount: menuItem.ratersNumber,
+                          mealTime: widget.menuItem.categoryId.toString(),
+                          itemName: widget.menuItem.itemName,
+                          rating: double.parse(widget.menuItem.averageRating),
+                          reviewsCount: widget.menuItem.ratersNumber,
                           price: price,
-                          itemId: menuItem.itemId,
-                          itemDescription: menuItem.itemDescription,
-                          vegetarian: menuItem.vegetarian,
-                          healthy: menuItem.healthy,
-                          itemStatus: menuItem.itemStatus,
-                          preparationTime: menuItem.preparationTime.minutes,
-                          menuItem: menuItem,
+                          itemId: widget.menuItem.itemId,
+                          itemDescription: widget.menuItem.itemDescription,
+                          vegetarian: widget.menuItem.vegetarian,
+                          healthy: widget.menuItem.healthy,
+                          itemStatus: widget.menuItem.itemStatus,
+                          preparationTime: widget.menuItem.preparationTime.minutes,
+                          menuItem: widget.menuItem,
                         ),
                       ],
                     ),
