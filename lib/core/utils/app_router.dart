@@ -7,6 +7,7 @@ import 'package:kamon/Features/auth/UI/login_screen.dart';
 import 'package:kamon/Features/home/presentation/views/widgets/branch_menu_screen.dart';
 import 'package:kamon/Features/menu/model/menu_model.dart';
 import 'package:kamon/Features/menu/presentation/item_screen.dart';
+import 'package:kamon/Features/menu/presentation/profile_screen.dart';
 import 'package:kamon/Features/ordars/cart_screen.dart';
 import 'package:kamon/Features/ordars/data/cart_provider.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ abstract class AppRouter {
   static const kItemScreen = '/itemScreen';
   static const kCartScreen = '/cartScreen';
   static const kLoginScreen = '/loginScreen';
+  static const kProfileScreen = '/profileScreen'; // Add this line
 
   static final router = GoRouter(
     routes: [
@@ -35,6 +37,10 @@ abstract class AppRouter {
         builder: (context, state) => const LoginScreen(
           branchLocation: '',
         ),
+      ),
+      GoRoute(
+        path: kProfileScreen, // Add this route
+        builder: (context, state) => ProfileScreen(),
       ),
       GoRoute(
         path: '/menu',
@@ -70,3 +76,4 @@ abstract class AppRouter {
     ],
   );
 }
+

@@ -140,7 +140,8 @@ class _HomeClipState extends State<HomeClip> {
                     color: Colors.white,
                     child: GestureDetector(
                       onTap: () {
-                        // Handle profile button press
+                        // Navigate to ProfileScreen
+                        GoRouter.of(context).push(AppRouter.kProfileScreen);
                       },
                       child: const Center(
                         child: Icon(
