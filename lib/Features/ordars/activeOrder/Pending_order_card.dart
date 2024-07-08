@@ -69,7 +69,7 @@ class _PendingOrderState extends State<PendingOrder> {
     if (customerId == null) throw Exception("Customer ID not found");
 
     final response = await http.get(Uri.parse(
-        'http://$baseUrl:4000/admin/customers/customerOrders/$customerId/10/pending'));
+        'http://$baseUrl/admin/customers/customerOrders/$customerId/10/pending'));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
