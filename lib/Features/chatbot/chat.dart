@@ -72,7 +72,7 @@ class _ChatPageState extends State<ChatPage> {
     if (input_message.isEmpty) {
       input_message = _wordsSpoken;
     }
-    url = 'https://final-chabot.onrender.com/predict?message=$input_message';
+    url = 'http://192.168.1.6:5000/predict?message=$input_message';
     if (input_message.isNotEmpty) {
       chatInputHistory.add(input_message.toString());
       _textEditingController.clear();
@@ -81,7 +81,7 @@ class _ChatPageState extends State<ChatPage> {
       input_message = '';
       _wordsSpoken = '';
       setState(() {
-        chatHistory.add(decoded['answer'][0]); // Use only the first element
+        chatHistory.add(decoded['answer']); // Use only the first element
       });
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.animateTo(
@@ -135,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
                             setState(() {
                               input_message = value;
                               url =
-                                  'https://final-chabot.onrender.com/predict?message=$input_message';
+                                  'http://192.168.1.6:5000/predict?message=$input_message';
                             });
                           },
                           decoration: const InputDecoration(
