@@ -58,7 +58,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       final url =
-          Uri.parse('https://54.235.40.102.nip.io/admin/customers/signup');
+          Uri.parse('https://54.235.40.102.nip.io/admin/auth/customerRegister');
       final Map<String, dynamic> body = {
         'firstName': _firstNameController.text,
         'lastName': _lastNameController.text,

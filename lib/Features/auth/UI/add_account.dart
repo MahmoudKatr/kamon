@@ -71,7 +71,7 @@ class _AddAccountScreenState extends State<AddAccountScreen> {
   Future<void> _signup() async {
     if (_formKey.currentState!.validate()) {
       final url = Uri.parse(
-          'https://54.235.40.102.nip.io/admin/customers/addCustomerAccount');
+          'https://54.235.40.102.nip.io/admin/auth/CustomerAccount');
       final Map<String, dynamic> body = {
         'customer_id': _customerId.text,
         'firstName': _firstNameController.text,

@@ -19,7 +19,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     try {
       final response = await dio.post(
-        'http://$baseUrl:4000/admin/customers/login',
+        'https://$baseUrl/admin/auth/customerLogin',
         data: {
           'phone': phone,
           'password': password,
