@@ -46,8 +46,8 @@ class MyBottomNavigationBar extends StatelessWidget {
               index: 1,
             ),
             _buildNavItem(
-              icon: CustomIcons.vector1_1,
-              label: 'Favorite',
+              icon: Icons.social_distance,
+              label: 'Community',
               index: 2,
             ),
             _buildNavItem(
