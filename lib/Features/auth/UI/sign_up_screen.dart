@@ -55,67 +55,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  Future<void> _signup() async {
-    if (_formKey.currentState!.validate()) {
-      final url =
-          Uri.parse('https://54.235.40.102.nip.io/admin/auth/customerRegister');
-      final Map<String, dynamic> body = {
-        'firstName': _firstNameController.text,
-        'lastName': _lastNameController.text,
-        'gender': _gender,
-        'phone': _phoneController.text,
-        'password': _passwordController.text,
-        'address': _addressController.text,
-        'locationCoordinates': '30.0713814,31.2502436',
-        'profileImg': _profileImgController.text,
-      };
+Future<void> _signup() async {
+  if (_formKey.currentState!.validate()) {
+    final url =
+        Uri.parse('https://54.235.40.102.nip.io/admin/auth/customerRegister');
+    final Map<String, dynamic> body = {
+      'firstName': _firstNameController.text,
+      'lastName': _lastNameController.text,
+      'gender': _gender,
+      'phone': _phoneController.text,
+      'password': _passwordController.text,
+      'address': _addressController.text,
+      'locationCoordinates': '30.0713814,31.2502436',
+      'profileImg': _profileImgController.text,
+    };
 
-      if (_cityController.text.isNotEmpty) {
-        body['city'] = _cityController.text;
-      }
-      if (_birthDateController.text.isNotEmpty) {
-        body['birthDate'] = _birthDateController.text;
-      }
+    if (_cityController.text.isNotEmpty) {
+      body['city'] = _cityController.text;
+    }
+    if (_birthDateController.text.isNotEmpty) {
+      body['birthDate'] = _birthDateController.text;
+    }
 
-      try {
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(body),
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const LoginScreen(branchLocation: ''),
+          ),
         );
-
-        if (response.statusCode == 200) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const AppLayoutScreen(
-                      branchLocation: '',
-                      branchId: 2,
-                    )),
-          );
-        } else {
-          String errorMessage = 'Signup failed. Please try again.';
-          try {
-            final responseJson = json.decode(response.body);
-            if (responseJson['error'] != null) {
-              errorMessage = responseJson['error'];
-            }
-          } catch (e) {
-            debugPrint('Error parsing response: $e');
+      } else {
+        String errorMessage = 'Signup failed. Please try again.';
+        try {
+          final responseJson = json.decode(response.body);
+          if (responseJson['error'] != null) {
+            errorMessage = responseJson['error'];
           }
-          debugPrint('Error: ${response.statusCode} - ${response.body}');
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(errorMessage)),
-          );
+        } catch (e) {
+          print('Error parsing response: $e');
+          debugPrint('Error parsing response: $e');
         }
-      } catch (e) {
-        debugPrint('Error making POST request: $e');
+        print('Error: ${response.statusCode} - ${response.body}');
+        debugPrint('Error: ${response.statusCode} - ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signup failed. Please try again.')),
+          SnackBar(content: Text(errorMessage)),
         );
       }
+    } catch (e) {
+      print('Error making POST request: $e');
+      debugPrint('Error making POST request: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signup failed. Please try again.')),
+      );
     }
   }
+}
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
